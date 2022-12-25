@@ -1,0 +1,4 @@
+{
+	"name": "meteo38_nbb",
+	"dependencies": {"nbb": "^1.1.156"}
+}
