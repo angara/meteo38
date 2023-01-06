@@ -1,3 +1,10 @@
+.EXPORT_ALL_VARIABLES:
+.PHONY: dev build clean version
 
+SHELL = bash
 
-# zip -r app.zip .
+dev:
+	bb nrepl
+
+run:
+	bb run main

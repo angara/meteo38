@@ -1,0 +1,21 @@
+{
+ :min-bb-version "1.0.169"
+ :paths ["src"]
+ 
+ :tasks
+ {nrepl
+  {:requires ([babashka.fs :as fs]
+              [babashka.nrepl.server :as srv])
+   :task (do 
+           (srv/start-server! {:host "localhost" :port 1667})
+           (spit ".nrepl-port" "1667")
+           (-> (Runtime/getRuntime)
+               (.addShutdownHook (Thread. (fn [] (fs/delete ".nrepl-port")))))
+           (deref (promise)))}
+  ;
+  main {:requires ([meteo38.main :as main])
+        :task (main/-main)}
+  ;
+  }
+ 
+ }

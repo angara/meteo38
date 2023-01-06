@@ -1,15 +1,12 @@
-# Meteo38.ru - serverless Clojure version
-
-## Yandex Function
-
-- <https://cloud.yandex.ru/docs/functions/quickstart/>
+# Meteo38.ru - Clojure version using babashka
 
 ## Babashka
 
-- <https://github.com/babashka/nbb/>
-
+- [Babashka book](https://book.babashka.org/)
+- <https://github.com/babashka/nrepl-client>
+  
 ## Dev
 
 ```
- nbb nrepl-server :port 1337 :host 0.0.0.0
+ bb nrepl-server :port 1337 :host 0.0.0.0
 ```
