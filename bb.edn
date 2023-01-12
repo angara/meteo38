@@ -2,20 +2,27 @@
  :min-bb-version "1.0.169"
  :paths ["src"]
  
- :tasks
- {nrepl
-  {:requires ([babashka.fs :as fs]
-              [babashka.nrepl.server :as srv])
-   :task (do 
-           (srv/start-server! {:host "localhost" :port 1667})
-           (spit ".nrepl-port" "1667")
-           (-> (Runtime/getRuntime)
-               (.addShutdownHook (Thread. (fn [] (fs/delete ".nrepl-port")))))
-           (deref (promise)))}
-  ;
-  main {:requires ([meteo38.main :as main])
-        :task (main/-main)}
+ :deps {
+        ;; https://github.com/http-kit/http-kit
+        ;; https://github.com/askonomm/ruuter
+        org.clojars.askonomm/ruuter {:mvn/version "1.3.2"}
+        }
+ 
+ :tasks {dev
+            {:extra-paths ["dev"]
+             :requires ([babashka.fs :as fs] 
+                        [babashka.nrepl.server :as srv])
+             :task 
+             (let [nrepl-port (with-open [sock (java.net.ServerSocket. 0)] 
+                                (.getLocalPort sock))]
+               (srv/start-server! {:host "localhost" :port nrepl-port})
+               (spit ".nrepl-port" (str nrepl-port "\n"))
+               (fs/delete-on-exit ".nrepl-port")
+               (deref (promise)))
+             }
+  ; 
+         main {:requires ([meteo38.main :as main])
+               :task (main/-main)}
   ;
   }
- 
  }

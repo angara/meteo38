@@ -7,6 +7,10 @@
   
 ## Dev
 
-```
+```sh
  bb nrepl-server :port 1337 :host 0.0.0.0
+```
+
+```sh
+:8038
 ```

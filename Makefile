@@ -4,7 +4,7 @@
 SHELL = bash
 
 dev:
-	bb nrepl
+	bb run dev
 
 run:
 	bb run main
