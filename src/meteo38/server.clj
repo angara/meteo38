@@ -10,26 +10,24 @@
 (set! *warn-on-reflection* true)
 
 
+(def ^:const EXPIRE_SECONDS (* 3 3600))
+
+
+(defn now-instant []
+  (java.time.Instant/now))
+
+
+(defn instant-plus-seconds [^java.time.Instant instant ^long seconds]
+  (-> instant
+   (.plus seconds java.time.temporal.ChronoUnit/SECONDS)
+   ))
+
+
 (defn instant->rfc1123 [^java.time.Instant instant]
   (->>  
     (.atOffset instant java.time.ZoneOffset/UTC)
     (.format java.time.format.DateTimeFormatter/RFC_1123_DATE_TIME)
     ))
-
-
-(defn file-last-modified [file]
-  (-> file
-      (fs/last-modified-time)
-      (fs/file-time->instant)
-      (instant->rfc1123)
-      ))
-
-(comment
-
-  (file-last-modified "./public/assets/style.css")
-  ;; => "Fri, 13 Jan 2023 07:10:22 GMT"
-
-  ,)
 
 
 (defn static-file-route [path prefix content-type]
@@ -39,7 +37,11 @@
                 (let [file (fs/file (str prefix path))]
                   {:status 200
                    :headers {"Content-Type" content-type
-                             "Last-Modified" (file-last-modified file)
+                             "Last-Modified" (-> file 
+                                                 (fs/last-modified-time) 
+                                                 (fs/file-time->instant) 
+                                                 (instant->rfc1123))
+                             "Expires" (-> (now-instant) (instant-plus-seconds EXPIRE_SECONDS))
                              }
                    :body file}
                   )
