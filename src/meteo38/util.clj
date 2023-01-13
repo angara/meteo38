@@ -11,7 +11,7 @@
    })
 
 
-(defn page-body [content]
+(defn page-body [& content]
   (str (raw "<!DOCTYPE html>\n")
        (html
         [:html

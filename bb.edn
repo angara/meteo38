@@ -6,7 +6,7 @@
         ;; https://github.com/http-kit/http-kit
         ;; https://github.com/askonomm/ruuter
         org.clojars.askonomm/ruuter {:mvn/version "1.3.2"}
-        }
+       }
  
  :tasks {dev
             {:extra-paths ["dev"]

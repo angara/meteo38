@@ -7,7 +7,10 @@
 
 (defn root-page [{:keys [_config] :as _req}]
   (html-resp
-    (page-body [:h1 "test of meteo38"])))
+    (page-body 
+     [:h1 "test of meteo38"]
+     [:h2 "subtitle"]
+     )))
 
 
 (defn data-block [{:keys [_config] :as _req}]
