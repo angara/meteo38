@@ -10,19 +10,6 @@
 (set! *warn-on-reflection* true)
 
 
-(def ^:const EXPIRE_SECONDS (* 3 3600))
-
-
-(defn now-instant []
-  (java.time.Instant/now))
-
-
-(defn instant-plus-seconds [^java.time.Instant instant ^long seconds]
-  (-> instant
-   (.plus seconds java.time.temporal.ChronoUnit/SECONDS)
-   ))
-
-
 (defn instant->rfc1123 [^java.time.Instant instant]
   (->>  
     (.atOffset instant java.time.ZoneOffset/UTC)
@@ -41,7 +28,7 @@
                                                  (fs/last-modified-time) 
                                                  (fs/file-time->instant) 
                                                  (instant->rfc1123))
-                             "Expires" (-> (now-instant) (instant-plus-seconds EXPIRE_SECONDS))
+                             "Cache-control" "public, max-age=604800" ;; , immutable
                              }
                    :body file}
                   )
