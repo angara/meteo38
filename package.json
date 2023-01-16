@@ -1,0 +1,16 @@
+{
+  "name": "meteo38",
+  "version": "6.0.0",
+  "description": "Meteo38.ru",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angara/meteo38.git"
+  },
+  "author": "Maxim Penzin",
+  "license": "ISC",
+  "homepage": "https://github.com/angara/meteo38#readme",
+  "devDependencies": {
+    "tailwindcss": "3.2.4",
+    "tw-elements": "1.0.0-alpha13"
+  }
+}

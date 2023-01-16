@@ -1,0 +1,56 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .pager-item {
+    @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
+           transition-all duration-200 focus:shadow-none
+           text-gray-800 hover:text-gray-800 hover:bg-gray-300;
+  }
+  .pager-item-active {
+    @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
+          transition-all duration-300 focus:shadow-none
+          shadow-md
+        text-gray-100 hover:text-gray-100 hover:bg-blue-400 bg-blue-500;
+  }
+
+  .pager-item-disabled {
+    @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
+           transition-all duration-200 focus:shadow-none text-gray-800;
+  }
+
+  .alink {
+    @apply text-blue-600 hover:underline underline-offset-2;
+  }
+
+  .forum_cite_q {
+    @apply text-amber-700;
+  }
+
+  .forum_msgref {
+    @apply text-sky-600;
+  }
+
+  .forum_ahref {
+    @apply text-blue-700 hover:underline underline-offset-2;
+  }
+
+  .forum_attach {
+    @apply text-xs text-stone-400 border-t border-stone-300 border-dashed mt-2 p-1;
+  }
+
+  .forum_attach_thumb {
+    @apply rounded shadow m-1 p-1 border border-stone-200 hover:border-blue-500;
+  }
+}
+
+/*
+@layer base {
+  html {
+    font-family: Proxima Nova, system-ui, sans-serif;
+  }
+}
+*/
+
