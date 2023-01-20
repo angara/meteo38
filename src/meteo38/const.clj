@@ -2,3 +2,4 @@
 
 
 (def ASSETS_DIR "./public/assets")
+(def ASSETS_URI "/assets/")

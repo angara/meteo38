@@ -27,7 +27,7 @@
          [:head
            [:meta {:charset "utf-8"}]
            [:title "Meteo38"] "\n"
-           [:script (slurp "./public/assets/local_redir.js")]
+           [:script (raw (slurp "./public/assets/local_redir.js"))]
            [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
            [:meta {:name "description" :content "Погода в Иркутске и области в реальном времени"}]
            [:link {:rel "shortcut icon" :href "/assets/favicon.ico"}] 
