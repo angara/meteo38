@@ -3422,6 +3422,23 @@ textarea.form-control.is-invalid {
   }
 }
 
+/* .pager-item {
+    @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
+           transition-all duration-200 focus:shadow-none
+           text-gray-800 hover:text-gray-800 hover:bg-gray-300;
+  }
+  .pager-item-active {
+    @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
+          transition-all duration-300 focus:shadow-none
+          shadow-md
+        text-gray-100 hover:text-gray-100 hover:bg-blue-400 bg-blue-500;
+  }
+
+  .pager-item-disabled {
+    @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
+           transition-all duration-200 focus:shadow-none text-gray-800;
+  } */
+
 .visible {
   visibility: visible;
 }
@@ -3448,6 +3465,11 @@ textarea.form-control.is-invalid {
 
 .sticky {
   position: sticky;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .block {
@@ -3512,6 +3534,16 @@ textarea.form-control.is-invalid {
 
 .justify-evenly {
   justify-content: space-evenly;
+}
+
+.bg-cyan-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(34 211 238 / var(--tw-bg-opacity));
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .outline {

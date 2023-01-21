@@ -7,6 +7,20 @@
 (set! *warn-on-reflection* true)
 
 
+(defn split-st-list [s]
+  (when (string? s)
+    (->> (str/split s #",")
+         (remove str/blank?)
+        )))
+
+(comment
+  
+  (split-st-list ",,uiii,npsd,ubil31")
+  ;; => ("uiii" "npsd" "ubil31")
+  
+  ,)
+
+
 (defn instant->rfc1123 [^java.time.Instant instant]
   (->>
    (.atOffset instant java.time.ZoneOffset/UTC)

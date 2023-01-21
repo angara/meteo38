@@ -8,8 +8,6 @@
    ))
 
 
-
-  
 (def routes 
   [{:path     "/"
     :method   :get

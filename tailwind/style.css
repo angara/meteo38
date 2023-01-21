@@ -4,7 +4,7 @@
 @tailwind utilities;
 
 @layer components {
-  .pager-item {
+  /* .pager-item {
     @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
            transition-all duration-200 focus:shadow-none
            text-gray-800 hover:text-gray-800 hover:bg-gray-300;
@@ -19,18 +19,10 @@
   .pager-item-disabled {
     @apply relative block py-1 px-3 rounded-md border-0 bg-transparent outline-none 
            transition-all duration-200 focus:shadow-none text-gray-800;
-  }
+  } */
 
   .alink {
     @apply text-blue-600 hover:underline underline-offset-2;
-  }
-
-  .forum_cite_q {
-    @apply text-amber-700;
-  }
-
-  .forum_msgref {
-    @apply text-sky-600;
   }
 
   .forum_ahref {
@@ -44,6 +36,7 @@
   .forum_attach_thumb {
     @apply rounded shadow m-1 p-1 border border-stone-200 hover:border-blue-500;
   }
+  
 }
 
 /*

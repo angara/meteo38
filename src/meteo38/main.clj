@@ -9,6 +9,6 @@
   (println "meteo38.main")
   (srv/run {:host config/HTTP_SERVER_HOST 
             :port config/HTTP_SERVER_PORT 
-            :backend-url "http://backend"})
+           })
   (deref (promise)
   ))
