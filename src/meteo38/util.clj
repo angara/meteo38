@@ -1,6 +1,6 @@
 (ns meteo38.util
   (:require
-    [hiccup2.core :refer [html raw]]
+    [clojure.string :as str]
    ))
 
 
@@ -15,24 +15,36 @@
 
 (defn html-resp [body]
   {:status 200
-   :headers {"content-type" "text/html;charset=utf-8"}
+   :headers {"Content-Type" "text/html;charset=utf-8"}
    :body (str body)
    })
 
 
-(defn page-body [& content]
-  (str (raw "<!DOCTYPE html>\n")
-       (html
-        [:html
-         [:head
-           [:meta {:charset "utf-8"}]
-           [:title "Meteo38"] "\n"
-           [:script (raw (slurp "./public/assets/local_redir.js"))]
-           [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
-           [:meta {:name "description" :content "Погода в Иркутске и области в реальном времени"}]
-           [:link {:rel "shortcut icon" :href "/assets/favicon.ico"}] 
-           [:link {:rel "stylesheet" :href "/assets/style.css"}]
-         ] 
-         [:body
-          content
-          ]])))
+(defn parse-query-string [qs]
+  (when-not (str/blank? qs)
+    (->> (str/split qs #"&")
+         (map  #(let [[k v] (str/split % #"=")]
+                  [(keyword k) v]))
+         (into {}))))
+
+(comment
+
+  (parse-query-string nil)
+  ;; => nil
+
+  (parse-query-string "")
+  ;; => nil
+
+  (parse-query-string "&")
+  ;; => {}
+
+  (parse-query-string "a=a&a=b&c=1&d=&e")
+  ;; => {:a "b", :c "1", :d nil, :e nil}
+  )
+
+
+(defn wrap-query-params [handler]
+  (fn [req]
+    (let [query-params (-> req (:query-string) (parse-query-string))]
+      (handler (update req :params merge query-params)))))
+

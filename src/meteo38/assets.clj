@@ -1,7 +1,7 @@
 (ns meteo38.assets
   (:require
     [babashka.fs :as fs]
-    [meteo38.const :refer [ASSETS_DIR]]
+    [meteo38.config :refer [ASSETS_DIR]]
     [meteo38.util :refer [instant->rfc1123]]
    ))
 
@@ -20,7 +20,7 @@
   (let [fname   (fs/file-name f)
         [_ ext] (fs/split-ext fname)
         ]
-    ;; [fname path ctype]
+    ;; [fname [path ctype]]
     [fname [f (get EXT_CTYPE_MAP ext "application/octet-stream")]]
     ))
 
@@ -33,7 +33,8 @@
       ))
 
 
-(def ASSETS_MAP (load-assets-map ASSETS_DIR))
+(def ASSETS_MAP 
+  (load-assets-map ASSETS_DIR))
 
 
 (defn static-assets-handler [{{fname :fname} :params}]

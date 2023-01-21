@@ -4,16 +4,20 @@
    [ruuter.core :as ruuter]
    [meteo38.handlers :as h]
    [meteo38.assets :refer [static-assets-handler]]
-  ))
+   [meteo38.util :refer [wrap-query-params]]
+   ))
 
 
+
+  
 (def routes 
   [{:path     "/"
     :method   :get
-    :response h/root-page}
+    :response (wrap-query-params h/root-page)}
+   
    {:path     "/data"
     :method   :get
-    :response h/data-block}
+    :response (wrap-query-params h/data-page)}
    ;
    {:path     "/assets/:fname"
     :method   :get
@@ -27,7 +31,8 @@
   ;; https://github.com/http-kit/http-kit/blob/master/src/org/httpkit/server.clj#L38
   (srv/run-server 
     #(ruuter/route routes (assoc % :config config))
-    {:ip host :port port 
+    {:ip host 
+     :port port 
      :legacy-return-value? false
      :worker-name-prefix "http-kit-"
      }))

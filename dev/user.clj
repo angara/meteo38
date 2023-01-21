@@ -2,6 +2,7 @@
   (:require
     [org.httpkit.server :as hk]
     [meteo38.server :as srv]
+    [meteo38.config]
    ))
 
 
