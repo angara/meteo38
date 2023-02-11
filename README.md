@@ -22,4 +22,3 @@ srv/run
 
 - [Babashka book](https://book.babashka.org/)
 - <https://github.com/babashka/nrepl-client>
-  

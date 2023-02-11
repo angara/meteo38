@@ -29,19 +29,20 @@
 
 (defn layout [page-body]
   (html
-   [:div.bg-cyan-400
+   [:div.bg-blue-200
     [:div.container.mx-auto.px-4.flex
-     [:a {:href config/METEO38_URL}
-      [:img {:src (str config/ASSETS_URI "meteo38_240x70.png") :alt "meteo38 logo"}]]
+     [:a.m-1 {:href config/METEO38_URL}
+      [:img {:src (str config/ASSETS_URI "meteo38_240x70.png") 
+             :width 240 :height 70
+             :alt "meteo38 logo"}]]
      "header"
      ]
     ]
     [:div.container.mx-auto.px-4
      page-body
      ]
-   [:div.bg-cyan-400
+   [:div.bg-blue-200
     [:div.container.mx-auto.px-4
      "footer"
      ]]
-   
    ))

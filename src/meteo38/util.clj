@@ -11,6 +11,7 @@
   (when (string? s)
     (->> (str/split s #",")
          (remove str/blank?)
+         (seq)
         )))
 
 (comment
@@ -18,6 +19,9 @@
   (split-st-list ",,uiii,npsd,ubil31")
   ;; => ("uiii" "npsd" "ubil31")
   
+  (split-st-list "")
+  ;; => nil
+ 
   ,)
 
 

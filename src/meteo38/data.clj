@@ -11,7 +11,6 @@
 ;; NOTE: implement st_data cache
 
 (defn fetch-st-data [st-list]
-  (prn "st-list:" st-list)
   (-> (str METEO_API_URL "/st/info?st=" (str/join "," st-list))
       #_{:clj-kondo/ignore [:unresolved-var]}
       (http/get {:timeout API_TIMEOUT})
@@ -20,6 +19,14 @@
       (json/parse-string true)
       (:data)
    ))
+
+
+(defn fetch-st-data-map [st-list]
+  (->> st-list
+       (fetch-st-data)
+       (map #(vector (:id %) %))
+       (into {})
+       ))
 
 
 (comment
