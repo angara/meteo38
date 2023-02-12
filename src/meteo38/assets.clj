@@ -13,6 +13,7 @@
    "js"  "text/javascript"
    "jpg" "image/jpeg"
    "png" "image/png"
+   "svg" "image/svg+xml"
    })
 
 

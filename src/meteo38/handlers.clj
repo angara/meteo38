@@ -3,61 +3,116 @@
     [clojure.math :as math]
     [clojure.string :as str]
     [hiccup2.core :refer [html raw]]
-    [meteo38.config :refer [ASSETS_URI METEO38_URL ST_LIST_DEFAULT]]
+    [meteo38.config :refer [ST_LIST_DEFAULT]]
     [meteo38.html :refer [page-body layout]]
     [meteo38.util :refer [html-resp split-st-list]]
     [meteo38.data :refer [fetch-st-data-map]]
    ))
 
 
-(defn- trend-direction [{:keys [avg last]}]
+(defn- safe-round [v]
+  (when (number? v) 
+    (math/round v)))
+
+
+(defn- trend-direction [{:keys [avg last]} delta]
   (when (and (number? avg) (number? last))
     (cond 
-      (< avg (+ last 0.5)) :up 
-      (> avg (- last 0.5)) :down
+      (> last (+ avg delta)) :up 
+      (< last (- avg delta)) :down
       :else nil)
     ))
 
 
 (defn- arrange-by [st-list data-map]
-  (map #(get data-map %) st-list))
+  (->> st-list
+       (map #(get data-map %))
+       (remove nil?)
+       (seq)
+       ))
 
 
-(defn- format-t [t]
-  (when-let [t (and (number? t) (math/round t))]
+(defn- format-t [t t-dir]
+  (when-let [t (safe-round t)]
     (let [[cls value] (cond 
-                       (< 0 t) ["text-red-700" (html (raw "&plus;") t)]
-                       (> 0 t) ["text-blue-700" (html (raw "&minus;") (- t))]
+                       (< 0 t) ["text-red-700"  (html [:span {:style "margin-right:1px;"} (raw "&plus;")] t)]
+                       (> 0 t) ["text-blue-700" (html [:span {:style "margin-right:1px;"} (raw "&minus;")] (- t))]
                        :else   ["" (raw "&nbsp;0")]
                        )]
-      [:div.text-xl [:span {:class cls} value] (raw "&deg;")])
+      [:div.text-2xl 
+       [:span {:class cls} value] 
+       [:span.text-gray-400 (raw "&deg;")]
+       (case t-dir
+          :up   [:span.text-xl {:class cls} (raw "&uarr;")]
+          :down [:span.text-xl {:class cls} (raw "&darr;")]
+          nil
+         )
+       ])
+    ))
+
+
+(defn- format-p [p p-dir]
+  (let [mmhg (math/round (/ p 1.3332239))]
+    [:div.text-green-700 mmhg " мм "
+     (case p-dir
+       :up   [:span.text-gray-400 (raw "&uarr;")]
+       :down [:span.text-gray-400 (raw "&darr;")]
+       nil)
+    ]))
+
+
+(defn- format-w [w g b]
+  (let [w (safe-round w)
+        g (safe-round g)
+        dir (when (number? b)
+              (get ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"] (math/round (/ (+ b 22) 45))))
+        ]
+    [:div.text-blue-800
+     w 
+     (when (and g (not= w g)) 
+       (str "-" g))
+     " м/с"
+     (when (and (> w 0) dir) 
+       (str ", " dir))
+     ]
     ))
 
 
 (defn data-block [{{raw-st-list :st_list} :params}]
   (let [st-list (or (split-st-list raw-st-list) ST_LIST_DEFAULT)
-        st-data (arrange-by st-list (fetch-st-data-map st-list))]
-    (prn "st-data:" st-data)
+        st-data (arrange-by st-list (fetch-st-data-map st-list)) 
+        ]
     (html 
-     [:ul.my-2 
-        (for [{:keys [id title addr descr last trends _ll _elev]} st-data
-              :let [ts (:ts last) 
-                    trend-t (trend-direction (:t trends))]
+     [:ul.my-3 
+        (when-not st-data
+          [:div.p-12.text-xl.text-indigo-900.text-center
+            "Нет актуальных данных по выбранным станциям."])
+      
+        (for [{:keys [id title addr descr last trends _ll elev]} st-data
+              :let [{:keys [ts p t w g b]} last
+                    trend-t (trend-direction (:t trends) 1.0)
+                    trend-p (trend-direction (:p trends) 0.5)
+                    elev (when (number? elev) (math/round elev))
+                    ]
               ]
-          [:li.my-2.px-3.py-1.bg-slate-50.rounded-lg.border.border-slate-100.flex
+          
+          [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex
             ; {:class "hover:bg-sky-50 hover:border-sky-100"}
-           [:div.grow
-            [:div.text-xl.font-semibold.tracking-wide.text-indigo-800 title]
+           [:div.grow.pr-2
+            [:div.text-xl.tracking-wide.text-indigo-800 title]
             (when-not (str/blank? addr)
               [:div.text-gray-600 addr])
             (when-not (str/blank? descr)
               [:div.text-gray-600 descr])
-            [:div.text-xs.text-gray-500.mt-1 "- " id ": " ts]
+            [:div.text-xs.text-gray-500.mt-1 "- " id " (" elev ") " ts]
            ]
-           [:div.tracking-wide.text-right
-            [:div (format-t (:t last))]
-            ;[:div (str last)]
-            [:div trend-t " - " (str trends)]
+           [:div.tracking-wide.text-right.pl-2
+            (when (number? t)
+              (format-t t trend-t))
+            (when (number? p)
+              (format-p p trend-p))
+            (when (number? w)
+              (format-w w g b))
             ]
            ]
           )]
