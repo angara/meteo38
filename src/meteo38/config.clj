@@ -24,4 +24,4 @@
 
 
 (def ST_LIST_DEFAULT 
-  '("irgp" "soln" "uiii" "istok"  "npsd" "olha"))
+  '("irgp" "soln" "uiii" "istok"  "npsd" "olha" "khomutovo"))

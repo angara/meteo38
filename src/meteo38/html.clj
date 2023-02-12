@@ -6,7 +6,6 @@
 
 
 (defn page-body [{uri :uri params :params} & content]
-  (prn "page-body:" params)
   (str (raw "<!DOCTYPE html>\n")
        (html
         [:html
@@ -29,7 +28,7 @@
 
 (defn layout [page-body]
   (html
-   [:div.bg-blue-200
+   [:div.bg-indigo-100
     [:div.container.mx-auto.px-4.flex
      [:a.m-1 {:href config/METEO38_URL}
       [:img {:src (str config/ASSETS_URI "meteo38_240x70.png") 
@@ -41,8 +40,8 @@
     [:div.container.mx-auto.px-4
      page-body
      ]
-   [:div.bg-blue-200
-    [:div.container.mx-auto.px-4
+   [:div.bg-indigo-100
+    [:div.container.mx-auto.px-4.py-1
      "footer"
      ]]
    ))
