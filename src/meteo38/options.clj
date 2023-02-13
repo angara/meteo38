@@ -4,7 +4,7 @@
 (defn options-block [_req]
 
 [:div.flex.justify-center 
- [:div {:class "mb-3 xl:w-96"} 
+ [:div {:class "xl:w-96"} 
   [:select {:class "form-select appearance-none 
                     block
       w-full

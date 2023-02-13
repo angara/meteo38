@@ -43,8 +43,8 @@
        [:span {:class cls} value] 
        [:span.text-gray-400 (raw "&deg;")]
        (case t-dir
-          :up   [:span.text-xl {:class cls} (raw "&uarr;")]
-          :down [:span.text-xl {:class cls} (raw "&darr;")]
+          :up   [:span.text-xl.text-red-700  (raw "&uarr;")]
+          :down [:span.text-xl.text-blue-700 (raw "&darr;")]
           nil
          )
        ])
@@ -83,15 +83,15 @@
         st-data (arrange-by st-list (fetch-st-data-map st-list)) 
         ]
     (html 
-     [:ul.my-3 
+     [:ul#data-block.my-3
         (when-not st-data
           [:div.p-12.text-xl.text-indigo-900.text-center
             "Нет актуальных данных по выбранным станциям."])
       
         (for [{:keys [id title addr descr last trends _ll elev]} st-data
               :let [{:keys [ts p t w g b]} last
-                    trend-t (trend-direction (:t trends) 1.0)
-                    trend-p (trend-direction (:p trends) 0.5)
+                    trend-t (trend-direction (:t trends) 2.0)
+                    trend-p (trend-direction (:p trends) 1.0)
                     elev (when (number? elev) (math/round elev))
                     ]
               ]

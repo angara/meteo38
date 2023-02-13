@@ -1,5 +1,6 @@
 (ns meteo38.assets
   (:require
+    [clojure.string :as str]
     [babashka.fs :as fs]
     [meteo38.config :refer [ASSETS_DIR]]
     [meteo38.util :refer [instant->rfc1123]]
@@ -43,11 +44,13 @@
     (let [file (fs/file path)]
       {:status 200
        :body file
-       :headers {"Content-Type" ctype
-                 "Last-Modified" (-> file
-                                     (fs/last-modified-time)
-                                     (fs/file-time->instant)
-                                     (instant->rfc1123))
-                 "Cache-control" "public, max-age=604800" ;; , immutable
-                 }})
-    {:status 404 :body "asset not found"}))
+       :headers { "Content-Type" ctype
+                  "Last-Modified" (-> file
+                                    (fs/last-modified-time)
+                                    (fs/file-time->instant)
+                                    (instant->rfc1123))
+                  "Cache-control" "public, max-age=604800" ;; , immutable
+        }
+       })
+    {:status 404 :body "asset not found"}
+    ))
