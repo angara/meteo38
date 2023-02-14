@@ -3,6 +3,7 @@
    [org.httpkit.server :as srv]
    [ruuter.core :as ruuter]
    [meteo38.handlers :as h]
+   [meteo38.exp-tjs :refer [tjs]]
    [meteo38.assets :refer [static-assets-handler]]
    [meteo38.util :refer [wrap-query-params]]
    ))
@@ -21,6 +22,9 @@
     :method   :get
     :response static-assets-handler}
   
+   {:path     "/exp/t.js"
+    :method   :get
+    :response (wrap-query-params tjs)}
    ])
 
 
