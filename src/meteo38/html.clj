@@ -30,13 +30,14 @@
 (defn layout [page-body]
   (html
    [:div.bg-indigo-100
-    [:div.container.mx-auto.px-4.flex
+    [:div.max-w-5xl.mx-auto.px-4.flex
      [:a.m-1 {:href config/METEO38_URL}
       [:img {:src (str config/ASSETS_URI "meteo38_240x70.png") 
              :style "width:240px; height:70px;"
              :alt "meteo38 logo"}]]
      [:div.px-2.flex.items-center.gap-2
       (options-block {})
+      ;; https://htmx.org/api/#ajax
       [:button {:hx-get "/data" :hx-trigger "click" :hx-target "#data-block" :hx-swap "outerHTML"
                 :type "button" 
                 :class "inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs  rounded shadow-md 
@@ -47,22 +48,23 @@
                 }
         "Reload"
        ]
-      
       ]
      ]
     ]
-    [:div.container.mx-auto.px-4
+    [:div.mx-auto.px-4
      page-body
      ]
    [:div.bg-indigo-100
-    [:div.container.mx-auto.px-4.py-2.flex.items-center
-      [:div.grow.flex.items-center
-       [:a.text-blue-700 {:href "https://t.me/meteo38bot" :target "_blank" :style "padding-top: 1px;"} "@Mete38bot"] 
-       [:img.inline-block.mx-2 {:src (str config/ASSETS_URI "telegram_logo.svg") :alt "Telegram" :style "height:24px; width:24px;"}]
-       [:a.text-blue-700 {:href "https://t.me/meteo38" :target "_blank" :style "padding-top: 1px;"} "Chat"]
+    [:div.max-w-5xl.mx-auto.px-4.py-4.flex.items-center
+      [:div.grow.flex.items-center.gap-x-1
+       [:img.inline-block {:src (str config/ASSETS_URI "telegram_logo.svg") :alt "Telegram" :style "height:24px; width:24px;"}]
+       [:a.text-blue-700.inline-block {:href "https://t.me/meteo38bot" :target "_blank" :class "pt-[2px]"} "@Mete38bot"] 
+       " / "
+       [:a.text-blue-700.inline-block {:href "https://t.me/meteo38" :target "_blank" :class "pt-[2px]"} "support chat"]
        ]
      [:div.text-right
        [:a.text-blue-700 {:href "https://github.com/angara/meteo38" :target "_blank" :title "Meteo38 source code"} 
+        [:span.inline-block {:class "pt-[2px]"} "source code"]
         [:img.inline-block.mx-2 {:src (str config/ASSETS_URI "github-mark.svg") :alt "GitHub" :style "height:24px; width:24px;"}]]
       ]
      ]]

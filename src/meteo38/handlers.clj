@@ -83,7 +83,7 @@
         st-data (arrange-by st-list (fetch-st-data-map st-list)) 
         ]
     (html 
-     [:ul#data-block.my-3
+     [:ul#data-block.my-3.max-w-2xl.mx-auto
         (when-not st-data
           [:div.p-12.text-xl.text-indigo-900.text-center
             "Нет актуальных данных по выбранным станциям."])
