@@ -86,6 +86,7 @@
             expire (+ now STATION_FETCH_INTERVAL)
             ]
         (reset! station-cache_ {:expire expire :data data})
+        (println "station list fetched:" (count data))
         data)
       )))
 

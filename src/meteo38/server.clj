@@ -17,7 +17,11 @@
    {:path     "/data"
     :method   :get
     :response (wrap-query-params h/data-page)}
-   ;
+
+   {:path     "/options"
+    :method   :get
+    :response (wrap-query-params h/options)}
+   
    {:path     "/assets/:fname"
     :method   :get
     :response static-assets-handler}

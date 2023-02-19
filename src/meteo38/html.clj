@@ -36,18 +36,28 @@
              :style "width:240px; height:70px;"
              :alt "meteo38 logo"}]]
      [:div.px-2.flex.items-center.gap-2
-      (options-block {})
+      (options-block)
       ;; https://htmx.org/api/#ajax
-      [:button {:hx-get "/data" :hx-trigger "click" :hx-target "#data-block" :hx-swap "outerHTML"
+      [:button {:hx-get "/options" :hx-trigger "click" :hx-target "#options-block" :hx-swap "outerHTML"
                 :type "button" 
-                :class "inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs  rounded shadow-md 
+                :class "inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs rounded shadow-md 
                         hover:bg-blue-700 hover:shadow-lg 
                         focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 
                         active:shadow-lg transition duration-150 ease-in-out"
                 ;; leading-tight
                 }
-        "Reload"
+        "Options"
        ]
+       [:button {:hx-get "/data" :hx-trigger "click" :hx-target "#data-block" :hx-swap "outerHTML"
+                :type "button"
+                :class "inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs rounded shadow-md 
+                        hover:bg-blue-700 hover:shadow-lg 
+                        focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 
+                        active:shadow-lg transition duration-150 ease-in-out"
+                ;; leading-tight
+                }
+         "Reload"]
+      
       ]
      ]
     ]
@@ -69,4 +79,5 @@
       ]
      ]]
     [:script {:src (str config/ASSETS_URI "htmx.min.js")}]
+    [:script {:src (str config/ASSETS_URI "app.js")}]
    ))

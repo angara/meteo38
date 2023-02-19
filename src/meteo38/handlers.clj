@@ -7,6 +7,7 @@
     [meteo38.html :refer [page-body layout]]
     [meteo38.util :refer [html-resp split-st-list]]
     [meteo38.data :refer [fetch-st-data-map]]
+    [meteo38.options :refer [options-block]]
    ))
 
 
@@ -117,6 +118,14 @@
            ]
           )]
      )))
+
+
+(defn options [_req]
+  (-> 
+   (options-block)
+   (html)
+   (html-resp)
+   ))
 
 
 (defn root-page [{{raw-st-list :st_list} :params :as req}]
