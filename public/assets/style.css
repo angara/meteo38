@@ -3681,20 +3681,8 @@ textarea.form-control.is-invalid {
   width: 100%;
 }
 
-.max-w-lg {
-  max-width: 32rem;
-}
-
-.max-w-xl {
-  max-width: 36rem;
-}
-
 .max-w-2xl {
   max-width: 42rem;
-}
-
-.max-w-3xl {
-  max-width: 48rem;
 }
 
 .max-w-5xl {
@@ -3854,11 +3842,6 @@ textarea.form-control.is-invalid {
   padding-bottom: 0.625rem;
 }
 
-.py-3 {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -3870,14 +3853,6 @@ textarea.form-control.is-invalid {
 
 .pr-2 {
   padding-right: 0.5rem;
-}
-
-.pt-px {
-  padding-top: 1px;
-}
-
-.pt-\[1px\] {
-  padding-top: 1px;
 }
 
 .pt-\[2px\] {
@@ -4093,13 +4068,6 @@ textarea.form-control.is-invalid {
   --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
-
-@media (min-width: 768px) {
-  .md\:px-8 {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
 }
 
 @media (min-width: 1280px) {
