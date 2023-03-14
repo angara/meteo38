@@ -30,11 +30,12 @@
 (defn layout [page-body]
   (html
    [:div.bg-indigo-100
-    [:div.max-w-5xl.mx-auto.px-4.flex
-     [:a.m-1 {:href config/METEO38_URL}
+    [:div.max-w-5xl.mx-auto.px-4.flex.flex-wrap
+     [:a.m-1.shrink-0 {:href config/METEO38_URL}
       [:img {:src (str config/ASSETS_URI "meteo38_240x70.png") 
              :style "width:240px; height:70px;"
              :alt "meteo38 logo"}]]
+     
      [:div.px-2.flex.grow.items-center.gap-2
       (options-block)
       ;; https://htmx.org/api/#ajax
@@ -59,9 +60,11 @@
          "Reload"]
       
       ]
+      
       [:div.flex.items-center
-        [:a.inline-block.cursor-pointer.text-blue-400 {:style "width:32px; height:32px;" :onclick "display_options_block();"} 
-          (raw (slurp (str config/ASSETS_DIR "gear-icon.svg")))]
+        [:a.inline-block.cursor-pointer.text-blue-700.my-3 
+          {:style "width:32px; height:32px;" :onclick "display_options_block();" :class "hover:text-blue-500"} 
+          (raw (slurp (str config/ASSETS_DIR "menu-icon.svg")))]
       ]
      ]
     ]
