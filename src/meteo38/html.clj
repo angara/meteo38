@@ -35,7 +35,7 @@
       [:img {:src (str config/ASSETS_URI "meteo38_240x70.png") 
              :style "width:240px; height:70px;"
              :alt "meteo38 logo"}]]
-     [:div.px-2.flex.items-center.gap-2
+     [:div.px-2.flex.grow.items-center.gap-2
       (options-block)
       ;; https://htmx.org/api/#ajax
       [:button {:hx-get "/options" :hx-trigger "click" :hx-target "#options-block" :hx-swap "outerHTML"
@@ -58,6 +58,10 @@
                 }
          "Reload"]
       
+      ]
+      [:div.flex.items-center
+        [:a.inline-block.cursor-pointer.text-blue-400 {:style "width:32px; height:32px;" :onclick "display_options_block();"} 
+          (raw (slurp (str config/ASSETS_DIR "gear-icon.svg")))]
       ]
      ]
     ]

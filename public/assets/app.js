@@ -7,8 +7,12 @@ var selected_station = "";
 
 
 function save_and_reload(st_list) {
-  window.localStorage.setItem("st_list", (st_list || []).join(","));
-  var url = location.href+"?st_list="+(st_list || []).join(",");
+  var stl = (st_list || []).join(",");
+  window.localStorage.setItem("st_list", stl);
+  var url = window.location.protocol+"//"+window.location.host+window.location.pathname+"?st_list="+stl;
+  window.history.replaceState(null, document.title, url);
+
+  console.log("save st_list:", stl);
   // !!!
   htmx.ajax()
 
@@ -52,5 +56,12 @@ function remove_station() {
   st_list = st_list.filter((val)=>{ return val != st; });
   save_and_reload(st_list);
 }
+
+
+function display_options_block() {
+
+  console.log("display_options_block");
+}
+
 
 //.

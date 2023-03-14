@@ -131,7 +131,7 @@
 (defn root-page [{{raw-st-list :st_list} :params :as req}]
   (let [; st-list (split-st-list raw-st-list)
         ; st-data (fetch-st-data st-list)
-        XXX nil
+        ; XXX nil
         ]
     (html-resp
      (page-body req
