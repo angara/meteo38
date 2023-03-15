@@ -57,11 +57,19 @@ function remove_station() {
   save_and_reload(st_list);
 }
 
+function options_update(_btn) {
+
+  console.log("options_update");
+}
 
 function display_options_block() {
-
   console.log("display_options_block");
+
+  htmx.ajax('GET', "/options", {target:"#options_block",swap:"innerHTML"}).then(() => {
+    console.log("options_block loaded")
+  })
 }
+
 
 
 //.
