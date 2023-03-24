@@ -13,7 +13,7 @@ build:
 	npx tailwindcss -i ./tailwind/style.css -o ./public/assets/style.css --minify
 
 deploy:
-	echo "deploy"
+	@echo "deploy"
 	rsync -avz src public bb.edn run.sh ${PROD_HOST}:${PROD_PATH}
 
 dev-css:

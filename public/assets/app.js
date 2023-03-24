@@ -14,9 +14,6 @@ function save_and_reload(st_list) {
   window.localStorage.setItem("st_list", stl);
   var url = window.location.protocol+"//"+window.location.host+"/?st_list="+stl;
   window.history.replaceState(null, document.title, url);
-
-  console.log("save st_list:", stl);
-  // !!!
   htmx.ajax("GET", 
     window.location.protocol+"//"+window.location.host+"/data?st_list="+stl,
     {target:"#data-block", sawp:"outerHTML"}
@@ -28,20 +25,17 @@ function update_button(sel_st) {
   if(sel_st){
     var st_list = get_st_list();
     if(st_list.includes(sel_st)) {
-      console.log("remove button")
       btn.dataset.action = "remove"
       btn.dataset.st = sel_st
       btn.innerHTML = "&#215;"
       btn.classList.remove("invisible");
     } else {
-      console.log("insert button")
       btn.dataset.action = "insert"
       btn.dataset.st = sel_st
       btn.innerHTML = "&plus;"
       btn.classList.remove("invisible");
     }
   } else {
-    console.log("disabled button")
     btn.dataset.action = ""
     btn.dataset.st = ""
     btn.innerHTML = "*"
@@ -71,8 +65,6 @@ function remove_station(st) {
 }
 
 function options_update(btn) {
-  console.log("btn:", btn)
-  console.log("options_update");
   switch(btn.dataset.action) {
     case "insert": insert_station(btn.dataset.st); break;
     case "remove": remove_station(btn.dataset.st); break;
@@ -81,13 +73,9 @@ function options_update(btn) {
 }
 
 function display_options_block() {
-  console.log("display_options_block");
-
   htmx.ajax('GET', "/options", {target:"#options_block",swap:"innerHTML"}).then(() => {
-    console.log("options_block loaded")
+    // console.log("options_block loaded")
   })
 }
-
-
 
 //.

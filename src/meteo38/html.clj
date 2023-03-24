@@ -66,4 +66,6 @@
       ]]]
     [:script {:src (str config/ASSETS_URI "htmx.min.js")}]
     [:script {:src (str config/ASSETS_URI "app.js")}]
+    "\n"
+    (raw (slurp (str config/ASSETS_DIR "counter.html")))
    ))
