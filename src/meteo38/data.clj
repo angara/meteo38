@@ -29,7 +29,6 @@
 
 
 (defn near-stations [lat lng offset limit]
-  (prn "offset:" offset)
   (-> (str METEO_API_URL "/st/near?lat=" lat "&lng=" lng "&offset=" offset "&limit=" limit)
       #_{:clj-kondo/ignore [:unresolved-var]}
       (http/get {:timeout API_TIMEOUT})
@@ -86,7 +85,6 @@
             expire (+ now STATION_FETCH_INTERVAL)
             ]
         (reset! station-cache_ {:expire expire :data data})
-        (println "station list fetched:" (count data))
         data)
       )))
 

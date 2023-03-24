@@ -1,5 +1,5 @@
 .EXPORT_ALL_VARIABLES:
-.PHONY: dev build run clean version
+.PHONY: dev dev-css build run clean version deploy
 
 SHELL = bash
 
@@ -13,9 +13,10 @@ build:
 	npx tailwindcss -i ./tailwind/style.css -o ./public/assets/style.css --minify
 
 deploy:
-	echo "!not yet raedy!"
+	echo "deploy"
+	rsync -avz src public bb.edn run.sh ${PROD_HOST}:${PROD_PATH}
 
 dev-css:
-#	rsync -r ./assets/* ./dev/public/webapp/assets/
 	npx tailwindcss -i ./tailwind/style.css -o ./public/assets/style.css --watch
-.PHONY: dev-css
+
+#.

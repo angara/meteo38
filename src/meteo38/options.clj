@@ -23,18 +23,21 @@
         opts
         ]
        ]
-      [:button {; :hx-get "/options" :hx-trigger "click" :hx-target "#options-block" :hx-swap "outerHTML"
-                :type "button" 
-                :class "inline-block rounded-full px-4 border-2 border-primary
+      [:button#btn_st_action {; :hx-get "/options" :hx-trigger "click" :hx-target "#options-block" :hx-swap "outerHTML"
+                              :type "button" 
+                              :class "invisible
+                                      inline-block rounded-full px-4 border-2 border-primary
                         font-medium text-lg
                         text-primary
                         hover:border-primary-600 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-primary-600 
                         focus:border-primary-600 focus:text-primary-600 focus:outline-none focus:ring-0 
                         active:border-primary-700 active:text-primary-700
                         transition duration-150 ease-in-out"
-                :onclick "options_update(this)"
+                              :onclick "options_update(this)"
+                              :data-action ""  ;; insert | remove
+                              :data-st ""              
                 ;; leading-tight
-                }
+                              }
        (raw "&plus;")
        ]
       ]

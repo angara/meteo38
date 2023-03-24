@@ -22,3 +22,5 @@ srv/run
 
 - [Babashka book](https://book.babashka.org/)
 - <https://github.com/babashka/nrepl-client>
+
+- <https://github.com/babashka/babashka/releases/tag/v1.3.176>

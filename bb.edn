@@ -1,11 +1,11 @@
 {
- :min-bb-version "1.0.169"
+ :min-bb-version "1.3.176"
  :paths ["src"]
  
  :deps {
         ;; https://github.com/http-kit/http-kit
         ;; https://github.com/askonomm/ruuter
-        org.clojars.askonomm/ruuter {:mvn/version "1.3.2"}
+        org.clojars.askonomm/ruuter {:mvn/version "1.3.3"}
        }
  
  :tasks {

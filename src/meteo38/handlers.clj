@@ -11,6 +11,10 @@
    ))
 
 
+(defn st-graph-ref [st]
+  (str "https://angara.net/meteo/st/" st))
+
+
 (defn- safe-round [v]
   (when (number? v) 
     (math/round v)))
@@ -40,7 +44,7 @@
                        (> 0 t) ["text-blue-700" (html [:span {:style "margin-right:1px;"} (raw "&minus;")] (- t))]
                        :else   ["" (raw "&nbsp;0")]
                        )]
-      [:div.text-2xl 
+      [:div.text-2xl.whitespace-nowrap
        [:span {:class cls} value] 
        [:span.text-gray-400 (raw "&deg;")]
        (case t-dir
@@ -54,7 +58,7 @@
 
 (defn- format-p [p p-dir]
   (let [mmhg (math/round (/ p 1.3332239))]
-    [:div.text-green-700 mmhg " мм "
+    [:div.text-green-700.whitespace-nowrap mmhg " мм "
      (case p-dir
        :up   [:span.text-gray-400 (raw "&uarr;")]
        :down [:span.text-gray-400 (raw "&darr;")]
@@ -68,7 +72,7 @@
         dir (when (number? b)
               (get ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"] (math/round (/ (+ b 22) 45))))
         ]
-    [:div.text-blue-800
+    [:div.text-blue-800.whitespace-nowrap
      w 
      (when (and g (not= w g)) 
        (str "-" g))
@@ -84,28 +88,29 @@
         st-data (arrange-by st-list (fetch-st-data-map st-list)) 
         ]
     (html 
-     [:ul#data-block.my-3.max-w-2xl.mx-auto
+     [:ul#data-block.my-3.w-full
         (when-not st-data
           [:div.p-12.text-xl.text-indigo-900.text-center
             "Нет актуальных данных по выбранным станциям."])
       
-        (for [{:keys [id title addr descr last trends _ll elev]} st-data
-              :let [{:keys [ts p t w g b]} last
+        (for [{:keys [id title addr descr last trends]} st-data   ;; ll elev
+              :let [{:keys [p t w g b]} last  ;; ts
                     trend-t (trend-direction (:t trends) 2.0)
                     trend-p (trend-direction (:p trends) 1.0)
-                    elev (when (number? elev) (math/round elev))
+                    ; elev (when (number? elev) (math/round elev))
                     ]
               ]
           
           [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex
-            ; {:class "hover:bg-sky-50 hover:border-sky-100"}
            [:div.grow.pr-2
-            [:div.text-xl.tracking-wide.text-indigo-800 title]
+            [:div.text-xl.tracking-wide.text-indigo-800 
+              [:a {:href (st-graph-ref id) :target "_blank"} title ]
+             ]
             (when-not (str/blank? addr)
               [:div.text-gray-600 addr])
             (when-not (str/blank? descr)
               [:div.text-gray-600 descr])
-            [:div.text-xs.text-gray-500.mt-1 "- " id " (" elev ") " ts]
+            ; [:div.text-xs.text-gray-500.mt-1 "- " id " (" elev ") " ts]
            ]
            [:div.tracking-wide.text-right.pl-2
             (when (number? t)
