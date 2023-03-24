@@ -3,7 +3,6 @@
     [clojure.math :as math]
     [clojure.string :as str]
     [hiccup2.core :refer [html raw]]
-    [meteo38.config :refer [ST_LIST_DEFAULT]]
     [meteo38.html :refer [page-body layout]]
     [meteo38.util :refer [html-resp split-st-list]]
     [meteo38.data :refer [fetch-st-data-map]]
@@ -84,7 +83,7 @@
 
 
 (defn data-block [{{raw-st-list :st_list} :params}]
-  (let [st-list (or (split-st-list raw-st-list) ST_LIST_DEFAULT)
+  (let [st-list (split-st-list raw-st-list)
         st-data (arrange-by st-list (fetch-st-data-map st-list)) 
         ]
     (html 
@@ -133,7 +132,7 @@
    ))
 
 
-(defn root-page [{{raw-st-list :st_list} :params :as req}]
+(defn root-page [{{_raw-st-list :st_list} :params :as req}]
   (let [; st-list (split-st-list raw-st-list)
         ; st-data (fetch-st-data st-list)
         ; XXX nil
