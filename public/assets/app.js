@@ -73,6 +73,11 @@ function stlist_update(action) {
 }
 
 function display_options_block() {
+  if( document.getElementById("sel_stations") ) {
+    document.getElementById("options_block").innerHTML = "";
+    return;
+  }
+
   htmx.ajax('GET', "/options", {target:"#options_block",swap:"innerHTML"}).then(() => {
     // console.log("options_block loaded")
   })

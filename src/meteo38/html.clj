@@ -38,7 +38,7 @@
       
       ; [:div.p-1.flex.grow.items-center.justify-center {:id "options_block"} ]
 
-      [:div.flex.items-center {:style "justify-self: end;"}
+      [:div.flex.grow.items-center.justify-end
        [:a.inline-block.cursor-pointer.text-blue-700.my-3 
         {:style "width:32px; height:32px;" :onclick "display_options_block();" :class "hover:text-blue-500"} 
         (raw (slurp (str config/ASSETS_DIR "menu-icon.svg")))]
