@@ -36,7 +36,7 @@
               :style "width:240px; height:70px;"
               :alt "meteo38 logo"}]]
       
-      [:div.p-1.flex.grow.items-center.justify-center {:id "options_block"} ]
+      ; [:div.p-1.flex.grow.items-center.justify-center {:id "options_block"} ]
 
       [:div.flex.items-center {:style "justify-self: end;"}
        [:a.inline-block.cursor-pointer.text-blue-700.my-3 
@@ -47,6 +47,7 @@
      ]
 
     [:div.mx-auto.px-4.py-1.grow {:class "w-full sm:w-[80%] max-w-[700px]"}
+     [:div {:id "options_block"}]
      page-body
      ]
     
