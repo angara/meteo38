@@ -9,7 +9,7 @@
 (comment
 
   (def server
-    (srv/run {:host "localhost" :port 8038 :backend-url "http://backend"}))
+    (srv/run {:host "localhost" :port 8038}))
  
   (hk/server-stop! server)
  

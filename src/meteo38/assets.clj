@@ -39,7 +39,7 @@
   (load-assets-map ASSETS_DIR))
 
 
-(defn static-assets-handler [{{fname :fname} :params}]
+(defn static-assets-handler [fname]
   (if-let [[path ctype] (get ASSETS_MAP fname)]
     (let [file (fs/file path)]
       {:status 200
