@@ -46,7 +46,7 @@
       ]
      ]
 
-    [:div.mx-auto.px-4.py-1.grow {:class "w-full sm:w-[80%] md:w-[75%] xl:w-[60%]"}
+    [:div.mx-auto.px-4.py-1.grow {:class "w-full sm:w-[80%] max-w-[700px]"}
      page-body
      ]
     

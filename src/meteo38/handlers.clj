@@ -125,33 +125,15 @@
 
 
 (defn options [_req]
-  (-> 
-   (options-block)
-   (html)
-   (html-resp)
-   ))
+  (html-resp (options-block)))
 
 
-(defn root-page [{{_raw-st-list :st_list} :params :as req}]
-  (let [; st-list (split-st-list raw-st-list)
-        ; st-data (fetch-st-data st-list)
-        ; XXX nil
-        ]
-    (html-resp
-     (page-body req
-                (layout
-
-                  (data-block req)
-                 )
-                ))))
+(defn root-page [req]
+  (html-resp
+    (page-body req 
+               (layout (data-block req)))))
 
 
 (defn data-page [req]
   (html-resp (data-block req)))
 
-
-(comment
-  
-  (root-page {:uri "/"})
-  
-  ,)
