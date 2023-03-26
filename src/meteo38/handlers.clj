@@ -7,6 +7,7 @@
     [meteo38.util :refer [html-resp split-st-list]]
     [meteo38.data :refer [fetch-st-data-map]]
     [meteo38.options :refer [options-block]]
+    [meteo38.svgraph :as svgraph]
    ))
 
 
@@ -92,25 +93,29 @@
           [:div.p-12.text-xl.text-indigo-900.text-center
             "Нет актуальных данных по выбранным станциям."])
       
-        (for [{:keys [id title addr descr last trends]} st-data   ;; ll elev
+        (for [{:keys [id title addr descr last trends elev ll]} st-data
               :let [{:keys [p t w g b]} last  ;; ts
                     trend-t (trend-direction (:t trends) 2.0)
                     trend-p (trend-direction (:p trends) 1.0)
-                    ; elev (when (number? elev) (math/round elev))
+                    elev (when (number? elev) (math/round elev))
+                    note (str id " - lat:" (second ll) ", lon:" (first ll) ", elev:" elev)
                     ]
               ]
           
           [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex 
-           {:onclick "select_options(this)" :data-st id}
+           {:onclick "st_item_click(this)" :data-st id}
            [:div.grow.pr-2
             [:div.text-xl.tracking-wide.text-indigo-800 
-              [:a {:href (st-graph-ref id) :target "_blank"} title ]
+              [:a {:href (st-graph-ref id) 
+                   :target "_blank"
+                   :title note
+                   } title ]
              ]
             (when-not (str/blank? addr)
               [:div.text-gray-600 addr])
             (when-not (str/blank? descr)
               [:div.text-gray-600 descr])
-            ; [:div.text-xs.text-gray-500.mt-1 "- " id " (" elev ") " ts]
+            [:div {:id (str "svgraph_" id)}]
            ]
            [:div.tracking-wide.text-right.pl-2
             (when (number? t)
@@ -138,3 +143,6 @@
 (defn data-page [req]
   (html-resp (data-block req)))
 
+
+(defn svgraph [{{st :st} :params}]
+  (html-resp (svgraph/render st)))

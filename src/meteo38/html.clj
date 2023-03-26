@@ -11,7 +11,7 @@
         [:html
          [:head
           [:meta {:charset "utf-8"}]
-          [:title "Meteo38"] 
+          [:title "Meteo38: Погода в реальном времени"] 
           "\n"
           (when (and (= "/" uri) (not (:st_list params)))
             [:script (raw (slurp (str config/ASSETS_DIR "local_redir.js")))])

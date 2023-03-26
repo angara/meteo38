@@ -16,6 +16,7 @@
                        ""        h/root-page
                        "data"    h/data-page
                        "options" h/options
+                       "svgraph" h/svgraph
                        "assets"  (fn [_] (static-assets-handler fname))
                        "ext"     (when (= "t.js" fname) tjs)
                        nil)
@@ -30,7 +31,6 @@
   (println (format "listen at %s:%s" host port))
   ;; https://github.com/http-kit/http-kit/blob/master/src/org/httpkit/server.clj#L38
   (srv/run-server 
-   ; #(ruuter/route routes (assoc % :config config))
     (wrap-query-params #'handler)
     {:ip host 
      :port port 

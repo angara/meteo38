@@ -1,4 +1,8 @@
 (ns meteo38.data
+  (:import 
+   [java.time Clock ZonedDateTime]
+   [java.time.temporal ChronoUnit]
+   )
   (:require
     [clojure.string :as str]
     [cheshire.core :as json]
@@ -6,6 +10,8 @@
     [meteo38.config :refer [METEO_API_URL API_TIMEOUT]]
    ))
 
+
+(set! *warn-on-reflection* true)
 
 ;; NOTE: implement st_data cache
 
@@ -36,6 +42,17 @@
       (:body)
       (json/parse-string true)
       (:data)
+      ))
+
+
+(defn hourly-data [st-list t0 t1]
+  (-> (str METEO_API_URL "/st/hourly?st=" (str/join "," st-list) "&t0=" t0 "&t1=" t1)
+      #_{:clj-kondo/ignore [:unresolved-var]}
+      (http/get {:timeout API_TIMEOUT})
+      (deref)
+      (:body)
+      (json/parse-string true)
+      (:series)
       ))
 
 
@@ -89,8 +106,53 @@
       )))
 
 
+;; TODO: implement cache!
+;;
+(defn st-hourly [st ^long hours]
+  (let [t1 (ZonedDateTime/now (Clock/systemUTC))
+        t0 (.minus t1 hours ChronoUnit/HOURS)
+        data (hourly-data [st] (str t0) (str t1))
+       ]
+    (get data (keyword st))
+    ))
+
+
 (comment
 
+  (st-hourly "uiii" 10)
+  ;; => [{:p {:avg 960.0, :max 960, :min 960}, :t {:avg 4.0, :max 5, :min 3}, :w {:avg 2.0, :max 3, :min 1}}
+  ;;     {:b {:avg 160},
+  ;;      :p {:avg 960.0, :max 960, :min 960},
+  ;;      :t {:avg 6.5, :max 7, :min 6},
+  ;;      :w {:avg 2.0, :max 2, :min 2}}
+  ;;     {:p {:avg 959.5, :max 960, :min 959}, :t {:avg 8.0, :max 8, :min 8}, :w {:avg 1.5, :max 2, :min 1}}
+  ;;     {:b {:avg 110},
+  ;;      :p {:avg 959.0, :max 959, :min 959},
+  ;;      :t {:avg 8.5, :max 9, :min 8},
+  ;;      :w {:avg 2.0, :max 2, :min 2}}
+  ;;     {:p {:avg 958.0, :max 958, :min 958},
+  ;;      :t {:avg 9.5, :max 10, :min 9},
+  ;;      :w {:avg 1.0, :max 1, :min 1}}
+  ;;     {:b {:avg 125},
+  ;;      :p {:avg 957.5, :max 958, :min 957},
+  ;;      :t {:avg 9.0, :max 9, :min 9},
+  ;;      :w {:avg 2.0, :max 2, :min 2}}
+  ;;     {:p {:avg 954.0, :max 954, :min 954}, :t {:avg 8.0, :max 8, :min 8}, :w {:avg 1.0, :max 1, :min 1}}
+  ;;     {:b {:avg 25},
+  ;;      :p {:avg 954.0, :max 954, :min 954},
+  ;;      :t {:avg 7.0, :max 7, :min 7},
+  ;;      :w {:avg 1.5, :max 2, :min 1}}
+  ;;     {:b {:avg 80},
+  ;;      :p {:avg 956.5, :max 958, :min 955},
+  ;;      :t {:avg 6.5, :max 7, :min 6},
+  ;;      :w {:avg 2.0, :max 2, :min 2}}
+  ;;     {:b {:avg 180},
+  ;;      :p {:avg 958.0, :max 958, :min 958},
+  ;;      :t {:avg 4.0, :max 4, :min 4},
+  ;;      :w {:avg 3.0, :max 3, :min 3}}]
+
+
+  
   (->>
    (station-list)
    (map :title)

@@ -48,12 +48,16 @@ function display_options_block() {
   })
 }
 
-function select_options(elem) {
-  var sel = document.getElementById("sel_stations");
+function st_item_click(elem) {
   var st = elem.dataset.st;
-  if(sel && st) {
+  if(!st) { 
+    return; 
+  }
+  var sel = document.getElementById("sel_stations");
+  if(sel) {
     sel.value = st;
   }
+  htmx.ajax('GET', "/svgraph?st="+st, {target:"#svgraph_"+st,swap:"innerHTML"});
 }
 
 //.
