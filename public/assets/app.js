@@ -20,44 +20,9 @@ function save_and_reload(st_list) {
   );
 }
 
-// function update_button(sel_st) {
-//   var btn = document.getElementById("btn_st_action");
-//   if(sel_st){
-//     var st_list = get_st_list();
-//     if(st_list.includes(sel_st)) {
-//       btn.dataset.action = "remove"
-//       btn.dataset.st = sel_st
-//       btn.innerHTML = "&#215;"
-//       btn.classList.remove("invisible");
-//     } else {
-//       btn.dataset.action = "insert"
-//       btn.dataset.st = sel_st
-//       btn.innerHTML = "&plus;"
-//       btn.classList.remove("invisible");
-//     }
-//   } else {
-//     btn.dataset.action = ""
-//     btn.dataset.st = ""
-//     btn.innerHTML = "*"
-//     btn.classList.add("invisible");
-//   }
-// }
-
-// function options_onchange(target){
-//   var idx = target.selectedIndex;
-//   if(idx !== undefined) {
-//     var st = target.options[idx].value;
-//     // update_button(selected_station);
-//     console.log("sel change:", st)
-//     stlist_update('top');
-//   }
-// }
-
 function stlist_update(action) {
   var sel = document.getElementById("sel_stations");
   var st = sel.options[sel.selectedIndex].value;
-  
-  console.log("update:", st)
 
   if(!st) { return; }
 
@@ -81,6 +46,14 @@ function display_options_block() {
   htmx.ajax('GET', "/options", {target:"#options_block",swap:"innerHTML"}).then(() => {
     // console.log("options_block loaded")
   })
+}
+
+function select_options(elem) {
+  var sel = document.getElementById("sel_stations");
+  var st = elem.dataset.st;
+  if(sel && st) {
+    sel.value = st;
+  }
 }
 
 //.

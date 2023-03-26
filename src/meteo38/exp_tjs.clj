@@ -19,7 +19,7 @@
       )))
 
 
-(defn tjs [{{st :st} :params :as req}]
+(defn tjs [{{st :st} :params}]
   (let [st-data (-> [st] (fetch-st-data) (first))
         t       (-> st-data (:last) (:t))
         body    (or (format-t st t) "")

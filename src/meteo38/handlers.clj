@@ -87,7 +87,7 @@
         st-data (arrange-by st-list (fetch-st-data-map st-list)) 
         ]
     (html 
-     [:ul#data-block.my-3.w-full
+     [:ul#data-block.my-2.w-full
         (when-not st-data
           [:div.p-12.text-xl.text-indigo-900.text-center
             "Нет актуальных данных по выбранным станциям."])
@@ -100,7 +100,8 @@
                     ]
               ]
           
-          [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex
+          [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex 
+           {:onclick "select_options(this)" :data-st id}
            [:div.grow.pr-2
             [:div.text-xl.tracking-wide.text-indigo-800 
               [:a {:href (st-graph-ref id) :target "_blank"} title ]

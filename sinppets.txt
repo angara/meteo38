@@ -24,3 +24,5 @@ https://www.svgrepo.com/svg/491033/hamburger-menu
 
 
 https://www.htmlsymbols.xyz/punctuation-symbols/x-marks
+
+https://icons.getbootstrap.com/
