@@ -1,5 +1,11 @@
 # Meteo38.ru - Clojure version using babashka
 
+## Website temperature label
+
+```text
+https://meteo38.ru/ext/t.js?st=STATION_ID
+```
+
 ## Development
 
 ```sh

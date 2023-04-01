@@ -1,7 +1,8 @@
 (ns meteo38.data
   (:import 
-   [java.time Clock ZonedDateTime]
+   [java.time Clock ZonedDateTime Instant]
    [java.time.temporal ChronoUnit]
+   [java.time.format DateTimeFormatter]
    )
   (:require
     [clojure.string :as str]
@@ -13,7 +14,35 @@
 
 (set! *warn-on-reflection* true)
 
+
+
+(defn iso->milli [^String dt]
+  (try
+    (-> (.parse DateTimeFormatter/ISO_DATE_TIME dt)
+        (Instant/from)
+        (.toEpochMilli))
+    (catch Exception _ignore)
+    ))
+
+(comment
+  
+  (iso->milli "2023-04-01T15:26:00.507+08:00")
+  ;; => 1680333960507
+
+  ,)
+
+
 ;; NOTE: implement st_data cache
+
+(def ^:const FRESH_OFFSET (* 3600 1000)) ;; 1 hour
+
+
+(defn fresh-last-ts [st-data]
+  (when-let [ts (-> st-data :last :ts iso->milli)]
+    (when (> ts (- (System/currentTimeMillis) FRESH_OFFSET))
+      st-data
+      )))
+
 
 (defn fetch-st-data [st-list]
   (-> (str METEO_API_URL "/st/info?st=" (str/join "," st-list))
@@ -23,7 +52,8 @@
       (:body)
       (json/parse-string true)
       (:data)
-   ))
+      (as-> x (keep fresh-last-ts x))
+      ))
 
 
 (defn fetch-st-data-map [st-list]
@@ -42,6 +72,7 @@
       (:body)
       (json/parse-string true)
       (:data)
+      (as-> x (keep fresh-last-ts x))
       ))
 
 
