@@ -1,10 +1,10 @@
-# Meteo38.ru - Clojure version using babashka
+# Meteo38.ru - Clojure/babashka version
 
-## Website temperature label
+## Website urls
 
-```text
-https://meteo38.ru/ext/t.js?st=STATION_ID
-```
+- <https://meteo38.ru/> - main page
+- <https://meteo38.ru/?st=uiii,npsd> - specify list of stations to show
+- <https://meteo38.ru/ext/t.js?st=STATION_ID> - javascript snippet to embed into other webpages
 
 ## Development
 
@@ -20,6 +20,7 @@ connect nrepl
 srv/run
 
 ; http://localhost:8038/
+; https://tailwind-elements.com/
 ```
 
 ## Deploy
@@ -35,7 +36,13 @@ make build deploy
 
 ## Links
 
-- [meteo38 dev](http://localhost:8038/)
+Babashka:
 
 - [Babashka book](https://book.babashka.org/)
-- <https://github.com/babashka/nrepl-client>
+- [Toolbox](https://babashka.org/toolbox/)
+
+Icons:
+
+- <https://www.iconfinder.com/search>
+- <https://www.htmlsymbols.xyz/>
+- <https://icons.getbootstrap.com/>
