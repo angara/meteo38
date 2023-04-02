@@ -7,8 +7,14 @@
     [meteo38.util :refer [html-resp split-st-list]]
     [meteo38.data :refer [fetch-st-data-map]]
     [meteo38.options :refer [options-block]]
+    [meteo38.icons :as ico]
     [meteo38.svgraph :as svgraph]
    ))
+
+
+(defn permalink-st-list [st-list]
+  (str "https://meteo38.ru/?st=" 
+       (->> st-list (map :id) (str/join ","))))
 
 
 (defn st-graph-ref [st]
@@ -83,50 +89,60 @@
     ))
 
 
+(defn format-data-item [{:keys [id title addr descr last trends elev ll]}]  ;; st-data
+  (let [{:keys [p t w g b]} last  ;; ts
+        trend-t (trend-direction (:t trends) 2.0)
+        trend-p (trend-direction (:p trends) 1.0)
+        elev (when (number? elev) (math/round elev))
+        note (str id " - lat:" (second ll) ", lon:" (first ll) ", elev:" elev)]
+    ;
+    [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex
+     {:onclick "st_item_click(this)" :data-st id}
+     [:div.grow.pr-2
+      [:div.text-xl.tracking-wide.text-indigo-800
+       [:a {:href (st-graph-ref id)
+            :target "_blank"
+            :title note} title]]
+      (when-not (str/blank? addr)
+        [:div.text-gray-600 addr])
+      (when-not (str/blank? descr)
+        [:div.text-gray-600 descr])
+      [:div {:id (str "svgraph_" id)}]]
+     [:div.tracking-wide.text-right.pl-2
+      (when (number? t)
+        (format-t t trend-t))
+      (when (number? p)
+        (format-p p trend-p))
+      (when (number? w)
+        (format-w w g b))]]
+    ))
+
+
 (defn data-block [{{raw-st-list :st_list} :params}]
   (let [st-list (split-st-list raw-st-list)
-        st-data (arrange-by st-list (fetch-st-data-map st-list)) 
+        st-data-list (arrange-by st-list (fetch-st-data-map st-list)) 
         ]
     (html 
-     [:ul#data-block.my-2.w-full
-        (when-not st-data
+     [:div#data-block.my-2.w-full
+      (if st-data-list
+        (list
+         [:ul
+           (for [std st-data-list]
+            (format-data-item std))]
+         [:div.text-right
+          [:a.text-sky-600.inline-block.mx-3.my-0 
+           {:href (permalink-st-list st-data-list) :target "_blank"
+            :title "Прямая ссылка на выбранные станции"} 
+           (raw ico/external-link-svg)]
+          ]
+         )
+        (if raw-st-list
           [:div.p-12.text-xl.text-indigo-900.text-center
-            "Нет актуальных данных по выбранным станциям."])
-      
-        (for [{:keys [id title addr descr last trends elev ll]} st-data
-              :let [{:keys [p t w g b]} last  ;; ts
-                    trend-t (trend-direction (:t trends) 2.0)
-                    trend-p (trend-direction (:p trends) 1.0)
-                    elev (when (number? elev) (math/round elev))
-                    note (str id " - lat:" (second ll) ", lon:" (first ll) ", elev:" elev)
-                    ]
-              ]
-          
-          [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex 
-           {:onclick "st_item_click(this)" :data-st id}
-           [:div.grow.pr-2
-            [:div.text-xl.tracking-wide.text-indigo-800 
-              [:a {:href (st-graph-ref id) 
-                   :target "_blank"
-                   :title note
-                   } title ]
-             ]
-            (when-not (str/blank? addr)
-              [:div.text-gray-600 addr])
-            (when-not (str/blank? descr)
-              [:div.text-gray-600 descr])
-            [:div {:id (str "svgraph_" id)}]
-           ]
-           [:div.tracking-wide.text-right.pl-2
-            (when (number? t)
-              (format-t t trend-t))
-            (when (number? p)
-              (format-p p trend-p))
-            (when (number? w)
-              (format-w w g b))
-            ]
-           ]
-          )]
+           "Нет актуальных данных по выбранным станциям."]
+          [:div.text-gray-300.p-2.text-center 
+           "Загрузка данных ..."
+           [:script (raw "window.initial_load = true;")]]))
+      ]
      )))
 
 
@@ -137,7 +153,8 @@
 (defn root-page [req]
   (html-resp
     (page-body req 
-               (layout (data-block req)))))
+      (layout (data-block req))
+    )))
 
 
 (defn data-page [req]

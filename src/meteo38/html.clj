@@ -5,7 +5,7 @@
   ))
 
 
-(defn page-body [{uri :uri params :params} & content]
+(defn page-body [_ & content]
   (str (raw "<!DOCTYPE html>\n")
        (html
         [:html
@@ -13,13 +13,16 @@
           [:meta {:charset "utf-8"}]
           [:title "Meteo38: Погода в реальном времени"] 
           "\n"
-          (when (and (= "/" uri) (not (:st_list params)))
-            [:script (raw (slurp (str config/ASSETS_DIR "local_redir.js")))])
-          "\n"
           [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
           [:meta {:name "description" :content "Погода в Иркутске и области в реальном времени"}]
           [:link {:rel "shortcut icon" :href (str config/ASSETS_URI "favicon.ico")}]
           [:link {:rel "stylesheet" :href (str config/ASSETS_URI "style.css")}]]
+         "\n"
+         [:script 
+          (raw 
+"if(!window.localStorage.getItem('st_list')){
+     window.localStorage.setItem('st_list', 'irgp,soln,uiii,npsd,istok,olha,khomutovo,khrust_park,mamai_sphera' );};")
+          ]
          "\n"
          [:body {:style "min-height: 100vh;"}
           content]]

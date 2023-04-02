@@ -2,22 +2,23 @@
 //  meteo38 client js
 //
 
-var global_st_list = (window.localStorage.getItem("st_list") || "").split(",");
-var selected_station = "";
-
 function get_st_list() {
-  return (window.localStorage.getItem("st_list") || "").split(",");
+  var s = window.localStorage.getItem("st_list");
+  if(s) { return s.split(",").filter(x => x); }
+  else { return []; }
+}
+
+function load_data_block(stl) {
+  htmx.ajax("GET", 
+    window.location.protocol+"//"+window.location.host+"/data?st_list="+stl,
+    {target:"#data-block", swap:'outerHTML'}
+  );
 }
 
 function save_and_reload(st_list) {
   var stl = (st_list || []).join(",");
   window.localStorage.setItem("st_list", stl);
-  var url = window.location.protocol+"//"+window.location.host+"/?st_list="+stl;
-  window.history.replaceState(null, document.title, url);
-  htmx.ajax("GET", 
-    window.location.protocol+"//"+window.location.host+"/data?st_list="+stl,
-    {target:"#data-block", sawp:"outerHTML"}
-  );
+  load_data_block(stl);
 }
 
 function stlist_update(action) {
@@ -42,10 +43,7 @@ function display_options_block() {
     document.getElementById("options_block").innerHTML = "";
     return;
   }
-
-  htmx.ajax('GET', "/options", {target:"#options_block",swap:"innerHTML"}).then(() => {
-    // console.log("options_block loaded")
-  })
+  htmx.ajax('GET', "/options", {target:"#options_block",swap:"innerHTML"});
 }
 
 function st_item_click(elem) {
@@ -57,7 +55,13 @@ function st_item_click(elem) {
   if(sel) {
     sel.value = st;
   }
-  htmx.ajax('GET', "/svgraph?st="+st, {target:"#svgraph_"+st,swap:"innerHTML"});
+  htmx.ajax('GET', "/svgraph?st="+st, {target:"#svgraph_"+st, swap:"innerHTML"});
+}
+
+//
+
+if(window.initial_load) {
+  load_data_block(window.localStorage.getItem("st_list"));
 }
 
 //.

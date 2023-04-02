@@ -12,11 +12,12 @@
   (let [data-t (->> (st-hourly st HOURS) 
                     (mapv #(-> % :t :avg)))]
 
-    (prn "svg render:" st data-t)
+    ; (prn "svg render:" st data-t)
     
     (html
-     [:div (str data-t)]
-     [:svg]
+     ;[:div (str data-t)]
+     [:div ]
+     ; [:svg]
      ))
   )
 
