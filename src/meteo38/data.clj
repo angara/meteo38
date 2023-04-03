@@ -2,14 +2,14 @@
   (:import 
    [java.time Clock ZonedDateTime Instant]
    [java.time.temporal ChronoUnit]
-   [java.time.format DateTimeFormatter]
-   )
+   [java.time.format DateTimeFormatter])
+   
   (:require
     [clojure.string :as str]
     [cheshire.core :as json]
     [org.httpkit.client :as http]
-    [meteo38.config :refer [METEO_API_URL API_TIMEOUT]]
-   ))
+    [meteo38.config :refer [METEO_API_URL API_TIMEOUT]]))
+   
 
 
 (set! *warn-on-reflection* true)
@@ -21,8 +21,8 @@
     (-> (.parse DateTimeFormatter/ISO_DATE_TIME dt)
         (Instant/from)
         (.toEpochMilli))
-    (catch Exception _ignore)
-    ))
+    (catch Exception _ignore)))
+    
 
 (comment
   
@@ -40,8 +40,8 @@
 (defn fresh-last-ts [st-data]
   (when-let [ts (-> st-data :last :ts iso->milli)]
     (when (> ts (- (System/currentTimeMillis) FRESH_OFFSET))
-      st-data
-      )))
+      st-data)))
+      
 
 
 (defn fetch-st-data [st-list]
@@ -52,16 +52,16 @@
       (:body)
       (json/parse-string true)
       (:data)
-      (as-> x (keep fresh-last-ts x))
-      ))
+      (as-> x (keep fresh-last-ts x))))
+      
 
 
 (defn fetch-st-data-map [st-list]
   (->> st-list
        (fetch-st-data)
        (map #(vector (:id %) %))
-       (into {})
-       ))
+       (into {})))
+       
 
 
 (defn near-stations [lat lng offset limit]
@@ -72,8 +72,8 @@
       (:body)
       (json/parse-string true)
       (:data)
-      (as-> x (keep fresh-last-ts x))
       ))
+      
 
 
 (defn hourly-data [st-list t0 t1]
@@ -83,28 +83,28 @@
       (deref)
       (:body)
       (json/parse-string true)
-      (:series)
-      ))
+      (:series)))
+      
 
 
 (def PRIORITY_LETTERS 
   #{\А \Б \В \Г \Д \Е \Ë \Ж \З \И \Й \К \Л \М \Н \О \П \Р \С \Т \У \Ф \Х \Ц \Ч \Ш \Щ \Ъ \Ы \Ь \Э \Ю \Я
-    \а \б \в \г \д \е \ё \ж \з \и \й \к \л \м \н \о \п \р \с \т \у \ф \х \ц \ч \ш \щ \ъ \ы \ь \э \ю \я
-    })
+    \а \б \в \г \д \е \ё \ж \з \и \й \к \л \м \н \о \п \р \с \т \у \ф \х \ц \ч \ш \щ \ъ \ы \ь \э \ю \я})
+    
 
 (defn station-title-sort [{title :title}]
   (if (PRIORITY_LETTERS (first title))
     (str "0" title)
-    (str "1" title)
-    ))
+    (str "1" title)))
+    
 
 
 (defn fetch-stations []
   (let [lat 52.25 
         lng 104.3
         step 25
-        pagenum 4
-        ]
+        pagenum 4]
+    ;
     (->> (range 0 (* step pagenum) step)
          (reduce
           (fn [a offset]
@@ -112,11 +112,10 @@
               (if (< (count nst) step)
                 (reduced (conj a nst))
                 (conj a nst))))
-          []
-          )
+          [])
          (mapcat identity)
-         (sort-by station-title-sort)
-         )))
+         (sort-by station-title-sort))
+    ))
 
 
 (def STATION_FETCH_INTERVAL (* 1000 200))  ;; 200 secs
@@ -130,11 +129,11 @@
     (if (> expire now)
       data
       (let [data (fetch-stations)
-            expire (+ now STATION_FETCH_INTERVAL)
-            ]
+            expire (+ now STATION_FETCH_INTERVAL)]
+            
         (reset! station-cache_ {:expire expire :data data})
-        data)
-      )))
+        data))))
+      
 
 
 ;; TODO: implement cache!
@@ -142,10 +141,10 @@
 (defn st-hourly [st ^long hours]
   (let [t1 (ZonedDateTime/now (Clock/systemUTC))
         t0 (.minus t1 hours ChronoUnit/HOURS)
-        data (hourly-data [st] (str t0) (str t1))
-       ]
-    (get data (keyword st))
-    ))
+        data (hourly-data [st] (str t0) (str t1))]
+       
+    (get data (keyword st))))
+    
 
 
 (comment
@@ -186,8 +185,8 @@
   
   (->>
    (station-list)
-   (map :title)
-   )
+   (map :title))
+   
   
   ;; => ("Абакан"
   ;;     "Аэропорт Владивосток (VVO)"

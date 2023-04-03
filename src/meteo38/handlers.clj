@@ -13,7 +13,7 @@
 
 
 (defn permalink-st-list [st-list]
-  (str "https://meteo38.ru/?st=" 
+  (str "https://meteo38.ru/?st_list=" 
        (->> st-list (map :id) (str/join ","))))
 
 
