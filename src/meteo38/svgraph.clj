@@ -34,17 +34,12 @@
     (if-not (seq data-t)
       (html [:div]) ;; no data
       (let [[t-val up?] (bound-t data-t)
-            ; _ (prn "t-val:" t-val up?)
-            [view-y0 view-y1] (if up?
-                              [(- t-val) (- (- t-val svg-height))]
-                              [(- t-val) (- (- t-val svg-height))]
-                              )
+            y0 (if up? (- t-val) (+ t-val svg-height))
             ]
-        ; (prn "svg-y:" view-y0 view-y1)
         (html 
          [:svg {:style "margin:2px;"
                 :width (str svg-width) :height (str svg-height)
-                :viewBox (str "0 " view-y0 " " (str svg-width) " " view-y1) 
+                :viewBox (str "0 " y0 " " (str svg-width) " " (str svg-height)) 
                 :fill "none" :stroke "currentColor" :stroke-linecap "round" :stroke-linejoin "round" :stroke-width (str bar-width)}
           (->> data-t
                (map-indexed (fn [idx t]
@@ -52,8 +47,6 @@
                                 (if (< t 0)
                                   [:line {:x1 (str x) :y1 "0" :x2 (str x) :y2 (str (- t)) :stroke "blue"}]
                                   [:line {:x1 (str x) :y1 "0" :x2 (str x) :y2 (str (- t)) :stroke "red"}])))))])))))
-                                  
-               
 
 
 (comment
