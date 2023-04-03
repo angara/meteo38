@@ -34,7 +34,7 @@
 
 ;; NOTE: implement st_data cache
 
-(def ^:const FRESH_OFFSET (* 3600 1000)) ;; 1 hour
+(def ^:const FRESH_OFFSET (* 80 60 1000)) ;; 80 minutes
 
 
 (defn fresh-last-ts [st-data]
