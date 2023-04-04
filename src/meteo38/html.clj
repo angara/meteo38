@@ -47,7 +47,7 @@
       ]
      ]
 
-    [:div.mx-auto.px-4.py-1.grow {:class "w-full sm:w-[80%] max-w-[700px]"}
+    [:div.mx-auto.px-2.py-1.grow {:class "w-full sm:w-[80%] max-w-[700px]"}
       [:div {:id "options_block" :class "transition-all ease-in-out"}]
       page-body
      ]
