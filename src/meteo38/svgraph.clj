@@ -12,34 +12,43 @@
 (def bar-gap 2)
 (def bar-x0 2)
 (def x-step (+ bar-width bar-gap))
-(def svg-height 30)
+(def t-height 30)
+(def h-pad 2)
+(def svg-height (+ t-height h-pad h-pad))
 (def svg-width (+ bar-x0 (* HOURS x-step)))
 
 
-(defn bound-t [[t0 & data-t]]
-  (loop [t-min t0 t-max t0 up? true [t & t-rest] data-t]
+(defn bound-t [data-t height y0 step]
+  (loop [y0 y0 [t & t-rest] data-t]
+    (prn "y0:" y0 t)
     (if (nil? t)
-      (if up? 
-        [(* 10 (math/ceil  (/ t-max 10))) true] 
-        [(* 10 (math/floor (/ t-min 10))) false])
-      (cond 
-        (> t t-max) (recur t-min t true t-rest) 
-        (< t t-min) (recur t t-max false t-rest)
-        :else       (recur t-min t-max up? t-rest)))))
+      y0
+      (recur
+        (cond
+          (> t (+ y0 height))
+          (or (some #(when (<= t (+ % height)) %) (range y0 100 step)) 100)
+
+          (< t y0)
+          (or (some #(when (> t %) %) (range y0 -100 (- step))) -100)
+
+          :else y0
+          )
+        t-rest)
+      )))
 
 
 (defn render [st]
   (let [data-t (->> (st-hourly st HOURS)
-                    (keep #(-> % :t :avg)))]
+                    (keep #(-> % :t :avg))
+                    (map math/round)
+                    )]
     (if-not (seq data-t)
       (html [:div]) ;; no data
-      (let [[t-val up?] (bound-t data-t)
-            y0 (if up? (- t-val) (+ t-val svg-height))
-            ]
+      (let [y0 (bound-t data-t t-height -10 10)]
         (html 
          [:svg {:style "margin:2px;"
                 :width (str svg-width) :height (str svg-height)
-                :viewBox (str "0 " y0 " " (str svg-width) " " (str svg-height)) 
+                :viewBox (str "0 " (- (+ y0 t-height h-pad)) " " (str svg-width) " " (str svg-height)) 
                 :fill "none" :stroke "currentColor" :stroke-linecap "round" :stroke-linejoin "round" :stroke-width (str bar-width)}
           (->> data-t
                (map-indexed (fn [idx t]
