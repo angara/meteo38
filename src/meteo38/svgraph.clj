@@ -20,7 +20,6 @@
 
 (defn bound-t [data-t height y0 step]
   (loop [y0 y0 [t & t-rest] data-t]
-    (prn "y0:" y0 t)
     (if (nil? t)
       y0
       (recur
