@@ -1,6 +1,6 @@
 {
   "name": "meteo38",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "Meteo38.ru",
   "repository": {
     "type": "git",
@@ -10,7 +10,7 @@
   "license": "ISC",
   "homepage": "https://github.com/angara/meteo38#readme",
   "devDependencies": {
-    "tailwindcss": "3.3.1",
-    "tw-elements": "1.0.0-beta1"
+    "tailwindcss": "3.3.2",
+    "tw-elements": "1.0.0-beta2"
   }
 }

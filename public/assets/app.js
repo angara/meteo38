@@ -2,6 +2,21 @@
 //  meteo38 client js
 //
 
+var refresh_timeout_handler = null;
+
+function activate_refresh() {
+  if( refresh_timeout_handler ) {
+    clearTimeout(refresh_timeout_handler);
+  }
+  refresh_timeout_handler = setTimeout(
+    function() {
+      load_data_block(get_st_list());
+      activate_refresh();
+    },
+    200 * 1000
+  );
+}
+
 function get_st_list() {
   var s = window.localStorage.getItem("st_list");
   if(s) { return s.split(",").filter(x => x); }
@@ -19,6 +34,7 @@ function save_and_reload(st_list) {
   var stl = (st_list || []).join(",");
   window.localStorage.setItem("st_list", stl);
   load_data_block(stl);
+  activate_refresh();
 }
 
 function stlist_update(action) {
@@ -62,6 +78,7 @@ function st_item_click(elem) {
 
 if(window.initial_load) {
   load_data_block(window.localStorage.getItem("st_list"));
+  activate_refresh();
 }
 
 //.
