@@ -18,6 +18,6 @@
       (or "8038") 
       (Integer/parseInt)))
 
-(def METEO_API_URL 
-  (-> (System/getenv "METEO_API_URL") 
+(def API_METEO_URL 
+  (-> (System/getenv "API_METEO_URL") 
       (or "https://angara.net/api/meteo")))

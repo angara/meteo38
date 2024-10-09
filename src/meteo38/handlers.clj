@@ -163,3 +163,14 @@
 
 (defn svgraph [{{st :st} :params}]
   (html-resp (svgraph/render st)))
+
+
+;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
+
+
+(defn geo-map [req]
+  (html-resp
+   (page-body req
+              ;;
+              )
+   ))

@@ -8,7 +8,7 @@
     [clojure.string :as str]
     [cheshire.core :as json]
     [org.httpkit.client :as http]
-    [meteo38.config :refer [METEO_API_URL API_TIMEOUT]]))
+    [meteo38.config :refer [API_METEO_URL API_TIMEOUT]]))
    
 
 
@@ -45,7 +45,7 @@
 
 
 (defn fetch-st-data [st-list]
-  (-> (str METEO_API_URL "/st/info?st=" (str/join "," st-list))
+  (-> (str API_METEO_URL "/st/info?st=" (str/join "," st-list))
       #_{:clj-kondo/ignore [:unresolved-var]}
       (http/get {:timeout API_TIMEOUT})
       (deref)
@@ -65,7 +65,7 @@
 
 
 (defn near-stations [lat lng offset limit]
-  (-> (str METEO_API_URL "/st/near?lat=" lat "&lng=" lng "&offset=" offset "&limit=" limit)
+  (-> (str API_METEO_URL "/st/near?lat=" lat "&lng=" lng "&offset=" offset "&limit=" limit)
       #_{:clj-kondo/ignore [:unresolved-var]}
       (http/get {:timeout API_TIMEOUT})
       (deref)
@@ -73,11 +73,10 @@
       (json/parse-string true)
       (:data)
       ))
-      
 
 
 (defn hourly-data [st-list t0 t1]
-  (-> (str METEO_API_URL "/st/hourly?st=" (str/join "," st-list) "&t0=" t0 "&t1=" t1)
+  (-> (str API_METEO_URL "/st/hourly?st=" (str/join "," st-list) "&t0=" t0 "&t1=" t1)
       #_{:clj-kondo/ignore [:unresolved-var]}
       (http/get {:timeout API_TIMEOUT})
       (deref)
