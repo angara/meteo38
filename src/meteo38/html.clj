@@ -41,7 +41,7 @@
               :alt "meteo38 logo"}]]
 
       [:div.flex.grow.items-center.justify-end
-       [:a.inline-block.cursor-pointer.text-blue-700.my-3.mx-3 
+       [:a.inline-block.cursor-pointer.text-blue-700.my-3.mx-4 
         {:style "width:28px; height:28px;" :class "hover:text-blue-500"
          :href "/map"}
         (raw map-icon-svg)]

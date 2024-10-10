@@ -19,18 +19,15 @@ const INIT_ZOOM = 11
 const logo_png = "/assets/meteo38_logo.png"
 
 function active_stations() {
-  return fetch(
-    "http://rs.angara.net/meteo/api/active-stations?last-hours=4",
-    {} // headers: {"Autorization" "Basic ..."}
-  )
-  .then((resp) => resp.json())
-  .then((data) => {
-    console.log("resp.json:", data);
-    return data;
-  })
-  .catch((err) => { 
-    console.warn("active-stations:", err); 
-  });
+  return fetch("/map-data", {})
+    .then((resp) => resp.json())
+    .then((data) => {
+      console.log("resp.json:", data);
+      return data;
+    })
+    .catch((err) => { 
+      console.warn("active-stations:", err); 
+    });
 }
 
 
