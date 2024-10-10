@@ -2,7 +2,8 @@
   (:require
    [hiccup2.core :refer [html raw]]
    [meteo38.config :as config]
-  ))
+   [meteo38.icons :refer [map-icon-svg menu-icon-svg]]
+  ,))
 
 
 (defn page-body [_ & content]
@@ -40,9 +41,14 @@
               :alt "meteo38 logo"}]]
 
       [:div.flex.grow.items-center.justify-end
+       [:a.inline-block.cursor-pointer.text-blue-700.my-3.mx-3 
+        {:style "width:28px; height:28px;" :class "hover:text-blue-500"
+         :href "/map"}
+        (raw map-icon-svg)]
        [:a.inline-block.cursor-pointer.text-blue-700.my-3 
         {:style "width:32px; height:32px;" :onclick "display_options_block();" :class "hover:text-blue-500"} 
-        (raw (slurp (str config/ASSETS_DIR "menu-icon.svg")))]
+        (raw menu-icon-svg)
+        ]
        ]
       ]
      ]
