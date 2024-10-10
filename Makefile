@@ -4,10 +4,10 @@
 SHELL = bash
 
 dev:
-	bb run dev
+	(set -a && source .env && bb run dev)
 
-run:
-	bb run main
+# run:
+# 	bb run main
 
 build-map:
 	npm run build

@@ -7,7 +7,7 @@
     [clojure.string :as str]
     [cheshire.core :as json]
     [org.httpkit.client :as http]
-    [meteo38.config :refer [METEO_API_URL API_METEO_URL API_TIMEOUT]]
+    [meteo38.config :refer [METEO_API_URL METEO_API_AUTH API_METEO_URL API_TIMEOUT]]
    ,))
 
 
@@ -20,7 +20,7 @@
         (Instant/from)
         (.toEpochMilli))
     (catch Exception _ignore)))
-    
+
 
 (comment
   
@@ -114,7 +114,7 @@
 (defn active-stations []
   (-> (str METEO_API_URL "/active-stations?last-hours=4")
       #_{:clj-kondo/ignore [:unresolved-var]}
-      (http/get {:timeout API_TIMEOUT})
+      (http/get {:headers {"Authorization" METEO_API_AUTH} :timeout API_TIMEOUT})
       (deref)
       (:body)
       (json/parse-string true)
