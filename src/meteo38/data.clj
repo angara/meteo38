@@ -3,17 +3,15 @@
    [java.time Clock ZonedDateTime Instant]
    [java.time.temporal ChronoUnit]
    [java.time.format DateTimeFormatter])
-   
   (:require
     [clojure.string :as str]
     [cheshire.core :as json]
     [org.httpkit.client :as http]
-    [meteo38.config :refer [API_METEO_URL API_TIMEOUT]]))
-   
+    [meteo38.config :refer [METEO_API_URL API_METEO_URL API_TIMEOUT]]
+   ,))
 
 
 (set! *warn-on-reflection* true)
-
 
 
 (defn iso->milli [^String dt]
@@ -41,7 +39,6 @@
   (when-let [ts (-> st-data :last :ts iso->milli)]
     (when (> ts (- (System/currentTimeMillis) FRESH_OFFSET))
       st-data)))
-      
 
 
 (defn fetch-st-data [st-list]
@@ -53,7 +50,6 @@
       (json/parse-string true)
       (:data)
       (as-> x (keep fresh-last-ts x))))
-      
 
 
 (defn fetch-st-data-map [st-list]
@@ -61,7 +57,6 @@
        (fetch-st-data)
        (map #(vector (:id %) %))
        (into {})))
-       
 
 
 (defn near-stations [lat lng offset limit]
@@ -83,7 +78,6 @@
       (:body)
       (json/parse-string true)
       (:series)))
-      
 
 
 (def PRIORITY_LETTERS 
@@ -97,24 +91,35 @@
     (str "1" title)))
     
 
+;; ???
+;; (defn fetch-stations []
+;;   (let [lat 52.25 
+;;         lng 104.3
+;;         step 25
+;;         pagenum 4]
+;;     ;
+;;     (->> (range 0 (* step pagenum) step)
+;;          (reduce
+;;           (fn [a offset]
+;;             (let [nst (near-stations lat lng offset step)]
+;;               (if (< (count nst) step)
+;;                 (reduced (conj a nst))
+;;                 (conj a nst))))
+;;           [])
+;;          (mapcat identity)
+;;          (sort-by station-title-sort))
+;;     ))
 
-(defn fetch-stations []
-  (let [lat 52.25 
-        lng 104.3
-        step 25
-        pagenum 4]
-    ;
-    (->> (range 0 (* step pagenum) step)
-         (reduce
-          (fn [a offset]
-            (let [nst (near-stations lat lng offset step)]
-              (if (< (count nst) step)
-                (reduced (conj a nst))
-                (conj a nst))))
-          [])
-         (mapcat identity)
-         (sort-by station-title-sort))
-    ))
+
+(defn active-stations []
+  (-> (str METEO_API_URL "/active-stations?last-hours=4")
+      #_{:clj-kondo/ignore [:unresolved-var]}
+      (http/get {:timeout API_TIMEOUT})
+      (deref)
+      (:body)
+      (json/parse-string true)
+      (:stations)
+      ,))
 
 
 (def STATION_FETCH_INTERVAL (* 1000 200))  ;; 200 secs
@@ -127,12 +132,10 @@
         now (System/currentTimeMillis)]
     (if (> expire now)
       data
-      (let [data (fetch-stations)
+      (let [data (->> (active-stations) (sort-by station-title-sort))
             expire (+ now STATION_FETCH_INTERVAL)]
-            
         (reset! station-cache_ {:expire expire :data data})
         data))))
-      
 
 
 ;; TODO: implement cache!
@@ -141,13 +144,12 @@
   (let [t1 (ZonedDateTime/now (Clock/systemUTC))
         t0 (.minus t1 hours ChronoUnit/HOURS)
         data (hourly-data [st] (str t0) (str t1))]
-       
     (get data (keyword st))))
-    
 
 
 (comment
 
+  ; ???
   (st-hourly "uiii" 10)
   ;; => [{:p {:avg 960.0, :max 960, :min 960}, :t {:avg 4.0, :max 5, :min 3}, :w {:avg 2.0, :max 3, :min 1}}
   ;;     {:b {:avg 160},
@@ -185,61 +187,49 @@
   (->>
    (station-list)
    (map :title))
-   
+  ;;=> ("Абакан"
+  ;;    "Аршан"
+  ;;    "Аэропорт Анталья"
+  ;;    "Аэропорт Владивосток (VVO)"
+  ;;    "Аэропорт Манас"
+  ;;    "Аэропорт Шереметьево (SVO)"
+  ;;    "Байкальск"
+  ;;    "Ботаника 7"
+  ;;    "Братский аэропорт"
+  ;;    "Быстрая"
+  ;;    "Голоустное"
+  ;;    "Гражданпроект"
+  ;;    "Иркутский аэропорт"
+  ;;    "Красноярск"
+  ;;    "Култук"
+  ;;    "Минводы"
+  ;;    "Мирный"
+  ;;    "Николов Посад"
+  ;;    "Новокузнецк"
+  ;;    "Новостройка"
+  ;;    "Олха (верх)"
+  ;;    "Пивовариха"
+  ;;    "Пик Любви"
+  ;;    "Самарта"
+  ;;    "Сарминский голец"
+  ;;    "Саянск, Юбилейный, 67"
+  ;;    "Соболиная"
+  ;;    "Тунка"
+  ;;    "Узуры"
+  ;;    "Улан-Батор"
+  ;;    "Улан-Удэ, аэропорт"
+  ;;    "Хадарта"
+  ;;    "Хайта"
+  ;;    "Хомутово"
+  ;;    "Хужир"
+  ;;    "Чита"
+  ;;    "Юлинск"
+  ;;    "Якутск"
+  ;;    "Яхт-клуб Исток"
+  ;;    "Krabi airport (KBV)"
+  ;;    "Phuket airport (HKT)")
   
-  ;; => ("Абакан"
-  ;;     "Аэропорт Владивосток (VVO)"
-  ;;     "Аэропорт Шереметьево (SVO)"
-  ;;     "Братск (А-331:218)"
-  ;;     "Братск (А-331:238)"
-  ;;     "Братский аэропорт"
-  ;;     "Буслайка (А-331:46)"
-  ;;     "Вилюй (А-331:192)"
-  ;;     "Вилюй (А-331:272)"
-  ;;     "Гражданпроект"
-  ;;     "Гуран (А-331:23)"
-  ;;     "Еловская развязка (Р-255:1858)"
-  ;;     "Замзор (Р-255:1299)"
-  ;;     "Иркут, обход Иркутска (Р-255:17)"
-  ;;     "Иркутский аэропорт"
-  ;;     "Каймоново (А-331:503)"
-  ;;     "Камышет (Р-255:1326)"
-  ;;     "Красноярск"
-  ;;     "Куйтун (Р-255:1562)"
-  ;;     "Кутулик (Р-255:1709)"
-  ;;     "Мамай. Сфера"
-  ;;     "Минводы"
-  ;;     "Мирный"
-  ;;     "Моты (Р-258:45)"
-  ;;     "Николов Посад"
-  ;;     "Новокузнецк"
-  ;;     "Олха"
-  ;;     "Олха (верх)"
-  ;;     "Покосное (А-331:121)"
-  ;;     "Саватеевская развязка (Р-255:1842)"
-  ;;     "Солнечный"
-  ;;     "Тулюшка (Р-255:1537)"
-  ;;     "Тыреть (Р-255:1659)"
-  ;;     "Ук (Р-255:1341)"
-  ;;     "Улан-Батор"
-  ;;     "Улан-Удэ, аэропорт"
-  ;;     "Харик (Р-255:1579)"
-  ;;     "Хомутово"
-  ;;     "Хребтовая (А-331:444)"
-  ;;     "Хрустальный Парк"
-  ;;     "Чита"
-  ;;     "Шерагул (Р-255:1516)"
-  ;;     "Щеберта (Р-255:1438)"
-  ;;     "Юбилейный 118"
-  ;;     "Якутск"
-  ;;     "Яхт-клуб Исток"
-  ;;     "кафе Наш Дворик (Р-255:1605)"
-  ;;     "кафе на Верблюде (Р-255:1168)"
-  ;;     "кафе у Петра (Р-255:1277)"
-  ;;     "обход Иркутска (Р-255:23)"
-  ;;     ...)
-
-
+  ;???
   (fetch-st-data ["uiii" "npsd"])
   ;; => [{:addr "пгт. Маркова, мрн Николов Посад",
   ;;      :elev 560,

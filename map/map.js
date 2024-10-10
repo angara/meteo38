@@ -29,7 +29,7 @@ function active_stations() {
     return data;
   })
   .catch((err) => { 
-    console.warn("active-stations:", e); 
+    console.warn("active-stations:", err); 
   });
 }
 

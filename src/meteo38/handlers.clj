@@ -5,8 +5,8 @@
     [hiccup2.core :refer [html raw]]
     [meteo38.html :refer [page-body layout]]
     [meteo38.map  :refer [map-body]]
-    [meteo38.util :refer [html-resp split-st-list]]
-    [meteo38.data :refer [fetch-st-data-map]]
+    [meteo38.util :refer [json-resp html-resp split-st-list]]
+    [meteo38.data :refer [fetch-st-data-map station-list]]
     [meteo38.options :refer [options-block]]
     [meteo38.icons :as ico]
     [meteo38.svgraph :as svgraph]
@@ -173,3 +173,7 @@
   (html-resp
    (map-body req)
   ,))
+
+
+(defn geo-map-data [_]
+  (json-resp {:stations (station-list)}))

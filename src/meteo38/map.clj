@@ -24,3 +24,4 @@
           [:div {:id "map"}]
           (raw (slurp (str config/ASSETS_DIR "counter.html")))
          ])))
+

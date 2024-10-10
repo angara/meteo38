@@ -1,7 +1,8 @@
 (ns meteo38.util
   (:require
     [clojure.string :as str]
-   ))
+    [cheshire.core :as json]
+   ,))
 
 
 (set! *warn-on-reflection* true)
@@ -35,6 +36,13 @@
   {:status 200
    :headers {"Content-Type" "text/html;charset=utf-8"}
    :body (str body)
+   })
+
+
+(defn json-resp [data]
+  {:status 200
+   :headers {"Content-Type" "application/json;charset=utf-8"}
+   :body (json/generate-string data)
    })
 
 

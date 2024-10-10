@@ -22,8 +22,8 @@
   )
 
 (defn options-block []
-  (let [opts (for [{:keys [id title]} (station-list)]
-               [:option {:value id} title])
+  (let [opts (for [{:keys [st title]} (station-list)]
+               [:option {:value st} title])
         ]
     (html
      [:div.flex.mx-1.my-1.gap-2 
