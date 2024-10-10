@@ -1,6 +1,4 @@
 
-import "./ol.css"
-import logo_png from "./meteo38_logo.png"
 
 import {Map, View, Feature, Overlay} from 'ol'
 import {Point} from 'ol/geom'
@@ -17,6 +15,8 @@ import {Vector as VectorSource} from 'ol/source'
 const ST_LINK_BASE = 'https://angara.net/meteo/st/'
 const INIT_CENTER = [104.3, 52.24]
 const INIT_ZOOM = 11
+
+const logo_png = "/assets/meteo38_logo.png"
 
 function active_stations() {
   return fetch(

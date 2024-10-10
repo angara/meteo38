@@ -1,33 +1,34 @@
 
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 
 export default defineConfig({
-  // appType: 'custom',
   build:{
-    minify: false,
-    // outDir:"dist",
-    // ? assetsDir:"ass",
-        rollupOptions: {
-            // input:
-            //     // main: resolve(__dirname, "index.html"),
-            //     resolve(__dirname, "src/rmx-monaco.ts"),
-
-            output: {
-                // Prevent vendor.js being created
-                manualChunks: undefined,
-                // chunkFileNames: "zzz-[name].js",
-                // this got rid of the hash on style.css
-                assetFileNames: "assets/[name].[ext]",
-                entryFileNames: `assets/[name].js`,
-                chunkFileNames: `assets/[name].js`,                
-            },
-        },
+    minify: true,
+    outDir: "publis/assets",
+    emptyOutDir: false,
+    copyPublicDir: false,
+    assetsDir: "",
     sourcemap: true,
     // Prevent vendor.css being created
     cssCodeSplit: false,
     // prevent some warnings
-    chunkSizeWarningLimit: 60000,  
+    chunkSizeWarningLimit: 60000,
     //
-
+    publicDir: false, // "public"
+    rollupOptions: {
+      input: {
+        map: resolve(__dirname, "map/map.js"),
+      },
+      output: {
+          // Prevent vendor.js being created
+          manualChunks: undefined,
+          // chunkFileNames: "zzz-[name].js",
+          // this got rid of the hash on style.css
+          assetFileNames: "[name].[ext]",
+          entryFileNames: `[name].js`,
+          chunkFileNames: `[name].js`,
+      },
+    }
   }
 })

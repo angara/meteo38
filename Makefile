@@ -9,8 +9,13 @@ dev:
 run:
 	bb run main
 
-build:
+build-map:
+	npm run build
+
+build-tailwind:
 	npx tailwindcss -i ./tailwind/style.css -o ./public/assets/style.css --minify
+
+build: build-map build-tailwind
 
 deploy:
 	@echo "deploy"

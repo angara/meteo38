@@ -9,6 +9,9 @@
   "author": "Maxim Penzin",
   "license": "ISC",
   "homepage": "https://github.com/angara/meteo38#readme",
+  "scripts": {
+    "build": "vite build"
+  },
   "devDependencies": {
     "tailwindcss": "3.4.13",
     "tw-elements": "2.0.0",
