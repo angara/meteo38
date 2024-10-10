@@ -21,7 +21,7 @@
          [:script 
           (raw 
 "if(!window.localStorage.getItem('st_list')){
-     window.localStorage.setItem('st_list', 'irgp,soln,uiii,npsd,istok,olha,khomutovo,khrust_park,mamai_sphera' );};")
+     window.localStorage.setItem('st_list', 'irgp,uiii,npsd,botanika7,istok,olha,khomutovo,pivovar_perv');};")
           ]
          "\n"
          [:body {:style "min-height: 100vh;"}

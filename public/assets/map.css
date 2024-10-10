@@ -1,0 +1,43 @@
+
+html, body {
+        margin: 0;
+        height: 100%;
+}
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.st_label_ovl {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+  font-size: 15px;
+  border: 1px solid rgb(57,134,174);
+  border-radius: 6px;
+  background-color: #fffef8;
+  box-shadow: 0 0 8px rgba(0,0,0,0.4);
+  user-select: none;
+}
+
+.st_label { padding: 4px 8px; }
+.st_label_title { font-size: 16px; color: #5b1077; }
+.st_label_val {
+  margin-top: 2px;
+  text-align: center;
+}
+.st_label_plus  { color: #cc4400; letter-spacing: 1px; }
+.st_label_minus { color: #5555fb; letter-spacing: 1px; }
+.st_label_zero  { color: #884444; letter-spacing: 1px; }
+.st_label_units { color: #778899; margin: 0 1px;}
+
+.st_label_ovl a { text-decoration: none; color: #5b1077; }
+.st_label_ovl a:hover { text-decoration: underline; cursor: pointer; color: #3333dd; }
+
+.st_label_ovl .st_label_val .outdated { color: #aaaaaa; }
+
+.st_logo { top: 1ex; right: 1.2ex; }

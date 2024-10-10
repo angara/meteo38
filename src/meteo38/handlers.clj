@@ -4,6 +4,7 @@
     [clojure.string :as str]
     [hiccup2.core :refer [html raw]]
     [meteo38.html :refer [page-body layout]]
+    [meteo38.map  :refer [map-body]]
     [meteo38.util :refer [html-resp split-st-list]]
     [meteo38.data :refer [fetch-st-data-map]]
     [meteo38.options :refer [options-block]]
@@ -170,7 +171,5 @@
 
 (defn geo-map [req]
   (html-resp
-   (page-body req
-              ;;
-              )
-   ))
+   (map-body req)
+  ,))

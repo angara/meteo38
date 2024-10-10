@@ -5,7 +5,7 @@ import { resolve } from 'path'
 export default defineConfig({
   build:{
     minify: true,
-    outDir: "publis/assets",
+    outDir: "public/assets",
     emptyOutDir: false,
     copyPublicDir: false,
     assetsDir: "",
@@ -25,9 +25,9 @@ export default defineConfig({
           manualChunks: undefined,
           // chunkFileNames: "zzz-[name].js",
           // this got rid of the hash on style.css
-          assetFileNames: "[name].[ext]",
-          entryFileNames: `[name].js`,
-          chunkFileNames: `[name].js`,
+          // assetFileNames: "[name].[ext]",
+          entryFileNames: `[name].min.js`,
+          // chunkFileNames: `[name].js`,
       },
     }
   }
