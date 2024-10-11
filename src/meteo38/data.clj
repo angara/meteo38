@@ -4,7 +4,6 @@
    [java.time.temporal ChronoUnit]
    [java.time.format DateTimeFormatter])
   (:require
-    [clojure.string :as str]
     [cheshire.core :as json]
     [org.httpkit.client :as http]
     [meteo38.config :refer [METEO_API_URL METEO_API_AUTH API_TIMEOUT]]
@@ -98,7 +97,7 @@
 (defn station-hourly [st t0]
   (-> (str METEO_API_URL "/station-hourly?st=" st "&ts-beg=" t0)
       #_{:clj-kondo/ignore [:unresolved-var]}
-      (http/get {:timeout API_TIMEOUT})
+      (http/get {:headers {"Authorization" METEO_API_AUTH} :timeout API_TIMEOUT})
       (deref)
       (:body)
       (json/parse-string true)
