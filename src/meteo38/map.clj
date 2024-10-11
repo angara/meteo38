@@ -11,7 +11,7 @@
         [:html
          [:head
           [:meta {:charset "utf-8"}]
-          [:title "Meteo38: Погода в реальном времени"]
+          [:title "Meteo38: Карта погоды в реальном времени"]
           "\n"
           [:meta {:name "viewport" :content "width=device-width,initial-scale=1"}]
           [:meta {:name "description" :content "Погода в Иркутске и области в реальном времени"}]
