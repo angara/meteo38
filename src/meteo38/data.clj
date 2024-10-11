@@ -34,42 +34,12 @@
 
 (def ^:const FRESH_OFFSET (* 80 60 1000)) ;; 80 minutes
 
-
 (defn fresh-last-ts [st-data]
-  (when-let [ts (-> st-data :last :ts iso->milli)]
+  (when-let [ts (-> st-data :last_ts iso->milli)]
     (when (> ts (- (System/currentTimeMillis) FRESH_OFFSET))
       st-data)))
 
-
-(defn fetch-st-data [st-list]
-  (-> (str API_METEO_URL "/st/info?st=" (str/join "," st-list))
-      #_{:clj-kondo/ignore [:unresolved-var]}
-      (http/get {:timeout API_TIMEOUT})
-      (deref)
-      (:body)
-      (json/parse-string true)
-      (:data)
-      (as-> x (keep fresh-last-ts x))))
-
-
-(defn fetch-st-data-map [st-list]
-  (->> st-list
-       (fetch-st-data)
-       (map #(vector (:id %) %))
-       (into {})))
-
-
-(defn near-stations [lat lng offset limit]
-  (-> (str API_METEO_URL "/st/near?lat=" lat "&lng=" lng "&offset=" offset "&limit=" limit)
-      #_{:clj-kondo/ignore [:unresolved-var]}
-      (http/get {:timeout API_TIMEOUT})
-      (deref)
-      (:body)
-      (json/parse-string true)
-      (:data)
-      ))
-
-
+;; ???
 (defn hourly-data [st-list t0 t1]
   (-> (str API_METEO_URL "/st/hourly?st=" (str/join "," st-list) "&t0=" t0 "&t1=" t1)
       #_{:clj-kondo/ignore [:unresolved-var]}
@@ -83,32 +53,12 @@
 (def PRIORITY_LETTERS 
   #{\А \Б \В \Г \Д \Е \Ë \Ж \З \И \Й \К \Л \М \Н \О \П \Р \С \Т \У \Ф \Х \Ц \Ч \Ш \Щ \Ъ \Ы \Ь \Э \Ю \Я
     \а \б \в \г \д \е \ё \ж \з \и \й \к \л \м \н \о \п \р \с \т \у \ф \х \ц \ч \ш \щ \ъ \ы \ь \э \ю \я})
-    
+
 
 (defn station-title-sort [{title :title}]
   (if (PRIORITY_LETTERS (first title))
     (str "0" title)
     (str "1" title)))
-    
-
-;; ???
-;; (defn fetch-stations []
-;;   (let [lat 52.25 
-;;         lng 104.3
-;;         step 25
-;;         pagenum 4]
-;;     ;
-;;     (->> (range 0 (* step pagenum) step)
-;;          (reduce
-;;           (fn [a offset]
-;;             (let [nst (near-stations lat lng offset step)]
-;;               (if (< (count nst) step)
-;;                 (reduced (conj a nst))
-;;                 (conj a nst))))
-;;           [])
-;;          (mapcat identity)
-;;          (sort-by station-title-sort))
-;;     ))
 
 
 (defn active-stations []
@@ -138,8 +88,16 @@
         data))))
 
 
+(defn fetch-st-data [st-list]
+  (let [flt (set st-list)]
+    (->> (station-list)
+         (filter #(flt (:st %)))
+         (keep fresh-last-ts)
+         )))
+
+
 ;; TODO: implement cache!
-;;
+;; ???
 (defn st-hourly [st ^long hours]
   (let [t1 (ZonedDateTime/now (Clock/systemUTC))
         t0 (.minus t1 hours ChronoUnit/HOURS)
@@ -181,9 +139,8 @@
   ;;      :p {:avg 958.0, :max 958, :min 958},
   ;;      :t {:avg 4.0, :max 4, :min 4},
   ;;      :w {:avg 3.0, :max 3, :min 3}}]
-
-
   
+
   (->>
    (station-list)
    (map :title))
@@ -229,38 +186,45 @@
   ;;    "Krabi airport (KBV)"
   ;;    "Phuket airport (HKT)")
   
-  ;???
-  (fetch-st-data ["uiii" "npsd"])
-  ;; => [{:addr "пгт. Маркова, мрн Николов Посад",
-  ;;      :elev 560,
-  ;;      :id "npsd",
-  ;;      :last {:p 969.01, :st "npsd", :t -26.8, :ts "2023-01-21T15:18:19.507+08:00"},
-  ;;      :ll [104.2486 52.228],
-  ;;      :title "Николов Посад",
-  ;;      :trends {:p {:avg 968.1824999999999, :last 968.84},
-  ;;               :t {:avg -26.78333333333333, :last -26.9},
-  ;;               :ts "2023-01-21T15:12:50.005+08:00"},
-  ;;      :ts "2023-01-21T15:18:19.511+08:00"}
-  
-  ;;     {:addr "г. Иркутск, ул. Ширямова, 101",
-  ;;      :elev 495,
-  ;;      :id "uiii",
-  ;;      :last {:b 320,
-  ;;             :cl [4 300],
-  ;;             :d -32,
-  ;;             :icao "UIII",
-  ;;             :p 971,
-  ;;             :q 1031,
-  ;;             :st "uiii",
-  ;;             :t -28,
-  ;;             :ts "2023-01-21T15:00:00.000+08:00",
-  ;;             :unk ["R30/490242"],
-  ;;             :vis 6000,
-  ;;             :w 4},
-  ;;      :ll [104.366972 52.267288],
-  ;;      :title "Иркутский аэропорт",
-  ;;      :trends
-  ;;        {:p {:avg 970.25, :last 971}, :t {:avg -28.5, :last -28}, :ts "2023-01-21T15:12:50.005+08:00"},
-  ;;      :ts "2023-01-21T15:18:00.944+08:00"}]
-
-  ,)
+ (-> ["uiii" "npsd"]
+     (fetch-st-data))
+ ;;=> ({:created_at "2004-10-10T21:00:00+09:00",
+ ;;     :descr "г. Иркутск, ул. Ширямова, 101",
+ ;;     :elev 495.0,
+ ;;     :last {:b 360.0,
+ ;;            :b_ts "2024-10-11T09:30:00+08:00",
+ ;;            :d -2.0,
+ ;;            :d_delta 1.0,
+ ;;            :d_ts "2024-10-11T09:30:00+08:00",
+ ;;            :p 960.0,
+ ;;            :p_delta 0.0,
+ ;;            :p_ts "2024-10-11T09:30:00+08:00",
+ ;;            :t -2.0,
+ ;;            :t_delta 1.0,
+ ;;            :t_ts "2024-10-11T09:30:00+08:00",
+ ;;            :w 1.0,
+ ;;            :w_delta -0.5,
+ ;;            :w_ts "2024-10-11T09:30:00+08:00"},
+ ;;     :last_ts "2024-10-11T09:30:00+08:00",
+ ;;     :lat 52.267288,
+ ;;     :lon 104.366972,
+ ;;     :publ true,
+ ;;     :st "uiii",
+ ;;     :title "Иркутский аэропорт"}
+ ;;    {:created_at "2013-02-17T15:40:04.648+09:00",
+ ;;     :descr "пгт. Маркова, мрн Николов Посад",
+ ;;     :elev 560.0,
+ ;;     :last {:p 955.1482664379998,
+ ;;            :p_delta 0.07999343399990266,
+ ;;            :p_ts "2024-10-11T09:41:35.968434+08:00",
+ ;;            :t -1.6,
+ ;;            :t_delta 0.47499999999999964,
+ ;;            :t_ts "2024-10-11T09:41:35.968434+08:00"},
+ ;;     :last_ts "2024-10-11T09:41:35.968434+08:00",
+ ;;     :lat 52.228,
+ ;;     :lon 104.2486,
+ ;;     :publ true,
+ ;;     :st "npsd",
+ ;;     :title "Николов Посад"})
+    
+  )

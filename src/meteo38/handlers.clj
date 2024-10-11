@@ -6,16 +6,16 @@
     [meteo38.html :refer [page-body layout]]
     [meteo38.map  :refer [map-body]]
     [meteo38.util :refer [json-resp html-resp split-st-list]]
-    [meteo38.data :refer [fetch-st-data-map station-list]]
+    [meteo38.data :refer [fetch-st-data station-list]]
     [meteo38.options :refer [options-block]]
     [meteo38.icons :as ico]
     [meteo38.svgraph :as svgraph]
-   ))
+   ,))
 
 
 (defn permalink-st-list [st-list]
   (str "https://meteo38.ru/?st_list=" 
-       (->> st-list (map :id) (str/join ","))))
+       (->> st-list (map :st) (str/join ","))))
 
 
 (defn st-graph-ref [st]
@@ -27,21 +27,22 @@
     (math/round v)))
 
 
-(defn- trend-direction [{:keys [avg last]} delta]
-  (when (and (number? avg) (number? last))
+(defn- trend-direction [delta interval]
+  (when (and (number? delta) (number? interval))
     (cond 
-      (> last (+ avg delta)) :up 
-      (< last (- avg delta)) :down
+      (> delta interval) :up 
+      (< delta (- interval)) :down
       :else nil)
     ))
 
 
-(defn- arrange-by [st-list data-map]
-  (->> st-list
-       (map #(get data-map %))
-       (remove nil?)
-       (seq)
-       ))
+(defn- arrange-by [st-list data-list]
+  (let [data-map (into {} (map #(vector (:st %) %)) data-list)]
+    (->> st-list
+         (map #(get data-map %))
+         (remove nil?)
+         (seq)
+         )))
 
 
 (defn- format-t [t t-dir]
@@ -90,25 +91,21 @@
     ))
 
 
-(defn format-data-item [{:keys [id title addr descr last trends elev ll]}]  ;; st-data
+(defn format-data-item [{:keys [st title descr last elev lat lon]}]  ;; st-data
   (let [{:keys [p t w g b]} last  ;; ts
-        trend-t (trend-direction (:t trends) 2.0)
-        trend-p (trend-direction (:p trends) 1.0)
+        trend-t (trend-direction (:t_delta last) 2.0)
+        trend-p (trend-direction (:p_delta last) 1.0)
         elev (when (number? elev) (math/round elev))
-        note (str id " - lat:" (second ll) ", lon:" (first ll) ", elev:" elev)]
+        note (str st " - lat:" lat ", lon:" lon ", elev:" elev)]
     ;
     [:li.my-2.px-3.py-1.bg-gray-50.rounded-lg.border.border-slate-100.flex
-     {:onclick "st_item_click(this)" :data-st id}
+     {:onclick "st_item_click(this)" :data-st st}
      [:div.grow.pr-2
       [:div.text-xl.tracking-wide.text-indigo-800
-       [:a {:href (st-graph-ref id)
-            :target "_blank"
-            :title note} title]]
-      (when-not (str/blank? addr)
-        [:div.text-gray-600 addr])
+       [:a {:href (st-graph-ref st) :target "_blank" :title note} title]]
       (when-not (str/blank? descr)
         [:div.text-gray-600 descr])
-      [:div {:id (str "svgraph_" id)}]]
+      [:div {:id (str "svgraph_" st)}]]
      [:div.tracking-wide.text-right.pl-2
       (when (number? t)
         (format-t t trend-t))
@@ -121,7 +118,7 @@
 
 (defn data-block [{{raw-st-list :st_list} :params}]
   (let [st-list (split-st-list raw-st-list)
-        st-data-list (arrange-by st-list (fetch-st-data-map st-list)) 
+        st-data-list (arrange-by st-list (fetch-st-data st-list)) 
         ]
     (html 
      [:div#data-block.my-2.w-full
@@ -170,9 +167,7 @@
 
 
 (defn geo-map [req]
-  (html-resp
-   (map-body req)
-  ,))
+  (html-resp (map-body req)))
 
 
 (defn geo-map-data [_]
