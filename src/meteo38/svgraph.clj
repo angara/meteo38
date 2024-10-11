@@ -38,8 +38,9 @@
 
 (defn render [st]
   (let [data-t (->> (st-hourly st HOURS)
-                    (keep #(-> % :t :avg))
-                    (map math/round)
+                    (:t)
+                    (map #(if % (math/round %) 0)
+                         )
                     )]
     (if-not (seq data-t)
       (html [:div]) ;; no data
@@ -58,7 +59,7 @@
 
 
 (comment
-
+ 
   (render "uiii")
-  
+
   ,)

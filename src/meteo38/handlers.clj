@@ -98,7 +98,7 @@
 
 (defn format-data-item [{:keys [st title descr last elev lat lon]}]  ;; st-data
   (let [{:keys [t p w g b t_fresh p_fresh w_fresh]} last  ;; ts
-        trend-t (trend-direction (:t_delta last) 2.0)
+        trend-t (trend-direction (:t_delta last) 1.0)
         trend-p (trend-direction (:p_delta last) 1.0)
         elev (when (number? elev) (math/round elev))
         note (str st " - lat:" lat ", lon:" lon ", elev:" elev)]

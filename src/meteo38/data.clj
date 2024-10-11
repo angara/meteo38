@@ -7,7 +7,7 @@
     [clojure.string :as str]
     [cheshire.core :as json]
     [org.httpkit.client :as http]
-    [meteo38.config :refer [METEO_API_URL METEO_API_AUTH API_METEO_URL API_TIMEOUT]]
+    [meteo38.config :refer [METEO_API_URL METEO_API_AUTH API_TIMEOUT]]
    ,))
 
 
@@ -45,16 +45,6 @@
     (is-fresh-ts (-> st-data :last :p_ts)) (assoc-in [:last :p_fresh] true)
     (is-fresh-ts (-> st-data :last :w_ts)) (assoc-in [:last :w_fresh] true)
     ,))
-
-;; ???
-(defn hourly-data [st-list t0 t1]
-  (-> (str API_METEO_URL "/st/hourly?st=" (str/join "," st-list) "&t0=" t0 "&t1=" t1)
-      #_{:clj-kondo/ignore [:unresolved-var]}
-      (http/get {:timeout API_TIMEOUT})
-      (deref)
-      (:body)
-      (json/parse-string true)
-      (:series)))
 
 
 (def PRIORITY_LETTERS 
@@ -102,51 +92,41 @@
          (map set-fresh-tpw)
          )))
 
+;; ;; ;; ;; ;; ;; ;; ;; ;; ;;
 
-;; TODO: implement cache!
-;; ???
+;; TODO: implement cache
+(defn station-hourly [st t0]
+  (-> (str METEO_API_URL "/station-hourly?st=" st "&ts-beg=" t0)
+      #_{:clj-kondo/ignore [:unresolved-var]}
+      (http/get {:timeout API_TIMEOUT})
+      (deref)
+      (:body)
+      (json/parse-string true)
+      ,))
+
+
 (defn st-hourly [st ^long hours]
   (let [t1 (ZonedDateTime/now (Clock/systemUTC))
         t0 (.minus t1 hours ChronoUnit/HOURS)
-        data (hourly-data [st] (str t0) (str t1))]
-    (get data (keyword st))))
+        data (station-hourly st (str t0))]
+    (:series data)
+    ,))
 
 
 (comment
 
-  ; ???
   (st-hourly "uiii" 10)
-  ;; => [{:p {:avg 960.0, :max 960, :min 960}, :t {:avg 4.0, :max 5, :min 3}, :w {:avg 2.0, :max 3, :min 1}}
-  ;;     {:b {:avg 160},
-  ;;      :p {:avg 960.0, :max 960, :min 960},
-  ;;      :t {:avg 6.5, :max 7, :min 6},
-  ;;      :w {:avg 2.0, :max 2, :min 2}}
-  ;;     {:p {:avg 959.5, :max 960, :min 959}, :t {:avg 8.0, :max 8, :min 8}, :w {:avg 1.5, :max 2, :min 1}}
-  ;;     {:b {:avg 110},
-  ;;      :p {:avg 959.0, :max 959, :min 959},
-  ;;      :t {:avg 8.5, :max 9, :min 8},
-  ;;      :w {:avg 2.0, :max 2, :min 2}}
-  ;;     {:p {:avg 958.0, :max 958, :min 958},
-  ;;      :t {:avg 9.5, :max 10, :min 9},
-  ;;      :w {:avg 1.0, :max 1, :min 1}}
-  ;;     {:b {:avg 125},
-  ;;      :p {:avg 957.5, :max 958, :min 957},
-  ;;      :t {:avg 9.0, :max 9, :min 9},
-  ;;      :w {:avg 2.0, :max 2, :min 2}}
-  ;;     {:p {:avg 954.0, :max 954, :min 954}, :t {:avg 8.0, :max 8, :min 8}, :w {:avg 1.0, :max 1, :min 1}}
-  ;;     {:b {:avg 25},
-  ;;      :p {:avg 954.0, :max 954, :min 954},
-  ;;      :t {:avg 7.0, :max 7, :min 7},
-  ;;      :w {:avg 1.5, :max 2, :min 1}}
-  ;;     {:b {:avg 80},
-  ;;      :p {:avg 956.5, :max 958, :min 955},
-  ;;      :t {:avg 6.5, :max 7, :min 6},
-  ;;      :w {:avg 2.0, :max 2, :min 2}}
-  ;;     {:b {:avg 180},
-  ;;      :p {:avg 958.0, :max 958, :min 958},
-  ;;      :t {:avg 4.0, :max 4, :min 4},
-  ;;      :w {:avg 3.0, :max 3, :min 3}}]
-  
+  ;;=> {:d [0.0 1.5 -2.0 -2.0 -2.0 -2.0 -2.0 -2.0 -2.0 -1.5 -1.0],
+  ;;    :p [959.0 957.5 956.0 955.0 954.5 955.0 955.0 956.0 956.5 957.0 958.0],
+  ;;    :t [0.0 2.0 5.5 6.0 7.0 7.0 6.5 6.0 5.0 5.0 5.0],
+  ;;    :w [1.0 1.0 2.0 1.5 1.0 1.0 3.0 3.5 3.0 2.5 2.5]}
+
+  (st-hourly "npsd" 10)
+  ;;=> {:p [954.3683304565 954.0827983379166 953.7117176857499 952.7511298657998 952.7095777209165
+  ;;        952.9573351623332 953.5861724351663 954.3472210780834 955.0393864861666 955.7348849539999
+  ;;        955.974865256],
+  ;;    :t [-0.375 1.6499999999999997 3.875 5.2 6.116666666666667 6.341666666666666 6.041666666666667
+  ;;        5.416666666666667 4.7666666666666675 4.433333333333333 4.112499999999999]}
 
   (->>
    (station-list)
