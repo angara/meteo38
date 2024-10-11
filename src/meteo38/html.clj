@@ -57,7 +57,7 @@
       [:div {:id "options_block" :class "transition-all ease-in-out"}]
       page-body
      ]
-    
+
     [:footer.bg-indigo-100
      [:div.max-w-5xl.mx-auto.px-4.py-4.flex.items-center
       [:div.grow.flex.items-center.gap-x-1

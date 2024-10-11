@@ -34,10 +34,17 @@
 
 (def ^:const FRESH_OFFSET (* 80 60 1000)) ;; 80 minutes
 
-(defn fresh-last-ts [st-data]
-  (when-let [ts (-> st-data :last_ts iso->milli)]
-    (when (> ts (- (System/currentTimeMillis) FRESH_OFFSET))
-      st-data)))
+(defn- is-fresh-ts [ts]
+  (when-let [ts (iso->milli ts)]
+    (> ts (- (System/currentTimeMillis) FRESH_OFFSET))))
+
+
+(defn set-fresh-tpw [st-data]
+  (cond-> st-data
+    (is-fresh-ts (-> st-data :last :t_ts)) (assoc-in [:last :t_fresh] true)
+    (is-fresh-ts (-> st-data :last :p_ts)) (assoc-in [:last :p_fresh] true)
+    (is-fresh-ts (-> st-data :last :w_ts)) (assoc-in [:last :w_fresh] true)
+    ,))
 
 ;; ???
 (defn hourly-data [st-list t0 t1]
@@ -92,7 +99,7 @@
   (let [flt (set st-list)]
     (->> (station-list)
          (filter #(flt (:st %)))
-         (keep fresh-last-ts)
+         (map set-fresh-tpw)
          )))
 
 
@@ -227,4 +234,4 @@
  ;;     :st "npsd",
  ;;     :title "Николов Посад"})
     
-  )
+  ,)

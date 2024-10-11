@@ -45,13 +45,15 @@
          )))
 
 
-(defn- format-t [t t-dir]
+(defn- format-t [t t-dir fresh]
   (when-let [t (safe-round t)]
     (let [[cls value] (cond 
                        (< 0 t) ["text-red-700"  (html [:span {:style "margin-right:1px;"} (raw "&plus;")] t)]
                        (> 0 t) ["text-blue-700" (html [:span {:style "margin-right:1px;"} (raw "&minus;")] (- t))]
                        :else   ["" (raw "&nbsp;0")]
-                       )]
+                       )
+          cls (if fresh cls "text-slate-400")
+          ]
       [:div.text-2xl.whitespace-nowrap
        [:span {:class cls} value] 
        [:span.text-gray-400 (raw "&deg;")]
@@ -64,9 +66,11 @@
     ))
 
 
-(defn- format-p [p p-dir]
-  (let [mmhg (math/round (/ p 1.3332239))]
-    [:div.text-green-700.whitespace-nowrap mmhg " мм "
+(defn- format-p [p p-dir fresh]
+  (let [mmhg (math/round (/ p 1.3332239))
+        cls (if fresh "text-green-700" "text-slate-400")]
+    [:div.whitespace-nowrap {:class cls}
+     mmhg " мм "
      (case p-dir
        :up   [:span.text-gray-400 (raw "&uarr;")]
        :down [:span.text-gray-400 (raw "&darr;")]
@@ -74,13 +78,14 @@
     ]))
 
 
-(defn- format-w [w g b]
+(defn- format-w [w g b fresh]
   (let [w (safe-round w)
         g (safe-round g)
         dir (when (number? b)
               (get ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"] (math/round (/ (+ b 22) 45))))
+        cls (if fresh "text-blue-800" "text-slate-400")
         ]
-    [:div.text-blue-800.whitespace-nowrap
+    [:div.whitespace-nowrap {:class cls}
      w 
      (when (and g (not= w g)) 
        (str "-" g))
@@ -92,7 +97,7 @@
 
 
 (defn format-data-item [{:keys [st title descr last elev lat lon]}]  ;; st-data
-  (let [{:keys [p t w g b]} last  ;; ts
+  (let [{:keys [t p w g b t_fresh p_fresh w_fresh]} last  ;; ts
         trend-t (trend-direction (:t_delta last) 2.0)
         trend-p (trend-direction (:p_delta last) 1.0)
         elev (when (number? elev) (math/round elev))
@@ -108,11 +113,11 @@
       [:div {:id (str "svgraph_" st)}]]
      [:div.tracking-wide.text-right.pl-2
       (when (number? t)
-        (format-t t trend-t))
+        (format-t t trend-t t_fresh))
       (when (number? p)
-        (format-p p trend-p))
+        (format-p p trend-p p_fresh))
       (when (number? w)
-        (format-w w g b))]]
+        (format-w w g b w_fresh))]]
     ))
 
 
