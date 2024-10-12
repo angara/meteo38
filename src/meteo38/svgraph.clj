@@ -38,7 +38,7 @@
 (defn render [st]
   (let [data-t (->> (st-hourly st HOURS)
                     (:t)
-                    (map #(if % (math/round %) 0))
+                    (map #(if % (math/round %) nil))
                     )]
     (if-not (seq data-t)
       (html [:div]) ;; no data
@@ -53,9 +53,11 @@
           (->> data-t
                (map-indexed (fn [idx t]
                               (let [x (+ bar-x0 (* idx x-step))]
-                                (if (< t 0)
-                                  [:line {:x1 (str x) :y1 "0" :x2 (str x) :y2 (str (- t)) :stroke "blue"}]
-                                  [:line {:x1 (str x) :y1 "0" :x2 (str x) :y2 (str (- t)) :stroke "red"}])))))])))))
+                                (if (nil? t)
+                                  [:line {:x1 (str x) :y1 "0" :x2 (str x) :y2 "1" :stroke "gray"}]
+                                  (if (< t 0)
+                                    [:line {:x1 (str x) :y1 "0" :x2 (str x) :y2 (str (- t)) :stroke "blue"}]
+                                    [:line {:x1 (str x) :y1 "0" :x2 (str x) :y2 (str (- t)) :stroke "red"}]))))))])))))
 
 
 (comment
