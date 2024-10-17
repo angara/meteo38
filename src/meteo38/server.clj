@@ -15,6 +15,8 @@
         hdl          (case root
                        ""        h/root-page
                        "data"    h/data-page
+                       "map"     h/geo-map 
+                       "map-data"  h/geo-map-data
                        "options" h/options
                        "svgraph" h/svgraph
                        "assets"  (fn [_] (static-assets-handler fname))

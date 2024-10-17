@@ -6,8 +6,6 @@
 
 (def METEO38_URL "https://meteo38.ru/")
 
-(def API_TIMEOUT 5000)  ;; ms
-
 
 (def HTTP_SERVER_HOST 
   (-> (System/getenv "HTTP_SERVER_HOST") 
@@ -18,6 +16,12 @@
       (or "8038") 
       (Integer/parseInt)))
 
-(def METEO_API_URL 
-  (-> (System/getenv "METEO_API_URL") 
-      (or "https://angara.net/api/meteo")))
+
+(def API_TIMEOUT 5000)  ;; ms
+
+(def METEO_API_URL
+  (-> (System/getenv "METEO_API_URL")
+      (or "http://rs.angara.net/meteo/api")))
+
+(def METEO_API_AUTH
+  (str "Basic " (System/getenv "BASIC_AUTH")))

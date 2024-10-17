@@ -6,6 +6,8 @@
 
 (def arrow-down-short-svg   (slurp (str ASSETS_DIR "/arrow-down-short.svg")))
 (def arrow-up-short-svg     (slurp (str ASSETS_DIR "/arrow-up-short.svg")))
+(def map-icon-svg           (slurp (str ASSETS_DIR "/map-icon.svg")))
+(def menu-icon-svg          (slurp (str ASSETS_DIR "/menu-icon.svg")))
 (def x-svg                  (slurp (str ASSETS_DIR "/x.svg")))
 
 (def external-link-svg      (slurp (str ASSETS_DIR "/external-link.svg")))

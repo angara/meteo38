@@ -2,7 +2,7 @@
   (:require 
     [clojure.math :refer [round]]
     [meteo38.data :refer [fetch-st-data]]
-   ))
+   ,))
 
 
 (defn- format-t [st t]
@@ -20,9 +20,8 @@
 
 
 (defn tjs [{{st :st} :params}]
-  (let [st-data (-> [st] (fetch-st-data) (first))
-        t       (-> st-data (:last) (:t))
-        body    (or (format-t st t) "")
+  (let [t    (-> (fetch-st-data [st]) (first) :last :t)
+        body (or (format-t st t) "")
         ]
     {:status 200
      :headers {"Content-Type" "text/javascript"
@@ -31,3 +30,16 @@
                "Expires" "0"}
      :body body}
     ))
+
+(comment
+  
+  (tjs {:params {:st "uiii"}})
+  ;;=> {:body
+  ;;      "try{document.getElementById(\"meteo38_t_uiii\").innerHTML='<a href=\"https://meteo38.ru/\" style=\"color:#04d;text-decoration:none;\">-2&deg;</a>';}catch(err){};",
+  ;;    :headers {"Cache-Control" "no-cache, no-store, must-revalidate",
+  ;;              "Content-Type" "text/javascript",
+  ;;              "Expires" "0",
+  ;;              "Pragma" "no-cache"},
+  ;;    :status 200}
+  
+  ,)

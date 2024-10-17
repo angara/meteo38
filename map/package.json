@@ -1,0 +1,16 @@
+{
+  "name": "ol-app",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "watch": "vite build --watch"
+  },
+  "devDependencies": {
+    "vite": "^5.4.7"
+  },
+  "dependencies": {
+    "ol": "latest"
+  }
+}
