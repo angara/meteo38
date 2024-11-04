@@ -21,6 +21,7 @@
                        "svgraph" h/svgraph
                        "assets"  (fn [_] (static-assets-handler fname))
                        "exp"     (when (= "t.js" fname) tjs)
+                       "ext"     (when (= "t.js" fname) tjs)
                        nil)
         ]
     (if hdl
