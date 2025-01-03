@@ -1,4 +1,7 @@
 (ns meteo38.util
+  (:import
+   [java.time LocalDateTime ZoneOffset]
+   [java.time.format DateTimeFormatter])
   (:require
     [clojure.string :as str]
     [cheshire.core :as json]
@@ -26,10 +29,24 @@
   ,)
 
 
+(def formatter-ymd-hm (DateTimeFormatter/ofPattern "dd.MM.yyyy HH:mm"))
+
+(defn now-datetime []
+  (LocalDateTime/now))
+
+(defn format-ymd-hm [^LocalDateTime dt]
+  (.format formatter-ymd-hm dt))
+
+(comment
+  (format-ymd-hm (now-datetime))
+  ;;=> "03.01.2025 13:59"
+  ,)
+
+
 (defn instant->rfc1123 [^java.time.Instant instant]
   (->>
-   (.atOffset instant java.time.ZoneOffset/UTC)
-   (.format java.time.format.DateTimeFormatter/RFC_1123_DATE_TIME)))
+   (.atOffset instant ZoneOffset/UTC)
+   (.format DateTimeFormatter/RFC_1123_DATE_TIME)))
 
 
 (defn html-resp [body]

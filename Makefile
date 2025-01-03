@@ -6,6 +6,10 @@ SHELL = bash
 dev:
 	(set -a && source .env && bb run dev)
 
+dev-css:
+#	npm i
+	npx tailwindcss -i ./tailwind/style.css -o ./public/assets/style.css --watch
+
 # run:
 # 	bb run main
 
@@ -21,7 +25,7 @@ deploy:
 	@echo "deploy"
 	rsync -avz src public bb.edn run.sh ${PROD_HOST}:${PROD_PATH}
 
-dev-css:
-	npx tailwindcss -i ./tailwind/style.css -o ./public/assets/style.css --watch
+outdated:
+	@(clojure -Sdeps '{:deps {antq/antq {:mvn/version "RELEASE"}}}' -T antq.core/-main || exit 0)
 
 #.
