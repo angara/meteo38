@@ -5,7 +5,7 @@
     [hiccup2.core :refer [html raw]]
     [meteo38.html :refer [page-body layout]]
     [meteo38.map  :refer [map-body]]
-    [meteo38.util :refer [json-resp html-resp split-st-list now-datetime format-ymd-hm]]
+    [meteo38.util :refer [json-resp html-resp split-st-list now-inst format-dmy-hm]]
     [meteo38.data :refer [fetch-st-data station-list]]
     [meteo38.options :refer [options-block]]
     [meteo38.icons :as ico]
@@ -123,8 +123,7 @@
 
 (defn data-block [{{raw-st-list :st_list} :params}]
   (let [st-list (split-st-list raw-st-list)
-        st-data-list (arrange-by st-list (fetch-st-data st-list)) 
-        ]
+        st-data-list (arrange-by st-list (fetch-st-data st-list))]
     (html 
      [:div#data-block.my-2.w-full
       (if st-data-list
@@ -133,7 +132,7 @@
            (for [std st-data-list]
             (format-data-item std))]
          [:div.flex.justify-between.items-end
-          [:div.mx-2.text-gray-400.text-sm (format-ymd-hm (now-datetime))]
+          [:div.mx-2.text-gray-400.text-sm (format-dmy-hm (now-inst))]
           [:a.text-sky-600.inline-block.mx-3.my-0 
            {:href (permalink-st-list st-data-list) :target "_blank"
             :title "Прямая ссылка на выбранные станции"} 
