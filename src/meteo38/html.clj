@@ -22,7 +22,7 @@
          [:script 
           (raw 
 "if(!window.localStorage.getItem('st_list')){
-     window.localStorage.setItem('st_list', 'irgp,uiii,npsd,botanika7,istok,olha,khomutovo,pivovar_perv');};")
+     window.localStorage.setItem('st_list', 'irgp,uiii,csscl,polyana,npsd,botanika7,istok,olha,khomutovo,pivovar_perv');};")
           ]
          "\n"
          [:body {:style "min-height: 100vh;"}
