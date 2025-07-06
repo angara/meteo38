@@ -1,6 +1,6 @@
 FROM alpine:3.22
 
-RUN apk add --no-cache curl bash ca-certificates
+RUN apk add --no-cache curl ca-certificates
 
 WORKDIR /app
 
