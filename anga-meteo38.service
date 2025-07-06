@@ -1,0 +1,14 @@
+[Unit]
+Description=Meteo38.ru
+After=network.target
+
+[Service]
+User=app
+Group=app
+WorkingDirectory=/app/meteo38
+ExecStart=/app/meteo38/run.sh
+RestartSec=1s
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

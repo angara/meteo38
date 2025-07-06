@@ -53,7 +53,7 @@
 /node_modules/
 
 ## allow 
-!.clj-kondo/
+# !.clj-kondo/
 !.gitignore
 !.dockerignore
 !.eslint*
