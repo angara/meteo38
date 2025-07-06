@@ -11,4 +11,4 @@ COPY src    /app/src
 COPY public /app/public
 COPY bb.edn .
 
-CMD ["./bb", "run", "main"]
+CMD ["/app/bb", "run", "main"]
