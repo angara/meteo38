@@ -1,20 +1,19 @@
 (ns meteo38.handlers
   (:require
-    [clojure.math :as math]
-    [clojure.string :as str]
-    [hiccup2.core :refer [html raw]]
-    [meteo38.html :refer [page-body layout]]
-    [meteo38.map  :refer [map-body]]
-    [meteo38.util :refer [json-resp html-resp split-st-list now-inst format-dmy-hm]]
-    [meteo38.data :refer [fetch-st-data station-list]]
-    [meteo38.options :refer [options-block]]
-    [meteo38.icons :as ico]
-    [meteo38.svgraph :as svgraph]
-   ,))
+   [clojure.math :as math]
+   [clojure.string :as str]
+   [hiccup2.core :refer [html raw]]
+   [meteo38.html :refer [page-body layout]]
+   [meteo38.map  :refer [map-body]]
+   [meteo38.util :refer [json-resp html-resp split-st-list now-inst format-dmy-hm]]
+   [meteo38.data :refer [fetch-st-data station-list]]
+   [meteo38.options :refer [options-block]]
+   [meteo38.icons :as ico]
+   [meteo38.svgraph :as svgraph]))
 
 
 (defn permalink-st-list [st-list]
-  (str "https://meteo38.ru/?st_list=" 
+  (str "https://meteo38.ru/?st_list="
        (->> st-list (map :st) (str/join ","))))
 
 
@@ -23,17 +22,16 @@
 
 
 (defn- safe-round [v]
-  (when (number? v) 
+  (when (number? v)
     (math/round v)))
 
 
 (defn- trend-direction [delta interval]
   (when (and (number? delta) (number? interval))
-    (cond 
-      (> delta interval) :up 
+    (cond
+      (> delta interval) :up
       (< delta (- interval)) :down
-      :else nil)
-    ))
+      :else nil)))
 
 
 (defn- arrange-by [st-list data-list]
@@ -41,29 +39,23 @@
     (->> st-list
          (map #(get data-map %))
          (remove nil?)
-         (seq)
-         )))
+         (seq))))
 
 
 (defn- format-t [t t-dir fresh]
   (when-let [t (safe-round t)]
-    (let [[cls value] (cond 
-                       (< 0 t) ["text-red-700"  (html [:span {:style "margin-right:1px;"} (raw "&plus;")] t)]
-                       (> 0 t) ["text-blue-700" (html [:span {:style "margin-right:1px;"} (raw "&minus;")] (- t))]
-                       :else   ["" (raw "&nbsp;0")]
-                       )
-          cls (if fresh cls "text-slate-400")
-          ]
+    (let [[cls value] (cond
+                        (< 0 t) ["text-red-700"  (html [:span {:style "margin-right:1px;"} (raw "&plus;")] t)]
+                        (> 0 t) ["text-blue-700" (html [:span {:style "margin-right:1px;"} (raw "&minus;")] (- t))]
+                        :else   ["" (raw "&nbsp;0")])
+          cls (if fresh cls "text-slate-400")]
       [:div.text-2xl.whitespace-nowrap
-       [:span {:class cls} value] 
+       [:span {:class cls} value]
        [:span.text-gray-400 (raw "&deg;")]
        (case t-dir
-          :up   [:span.text-xl.text-red-700  (raw "&uarr;")]
-          :down [:span.text-xl.text-blue-700 (raw "&darr;")]
-          nil
-         )
-       ])
-    ))
+         :up   [:span.text-xl.text-red-700  (raw "&uarr;")]
+         :down [:span.text-xl.text-blue-700 (raw "&darr;")]
+         nil)])))
 
 
 (defn- format-p [p p-dir fresh]
@@ -74,26 +66,22 @@
      (case p-dir
        :up   [:span.text-gray-400 (raw "&uarr;")]
        :down [:span.text-gray-400 (raw "&darr;")]
-       nil)
-    ]))
+       nil)]))
 
 
 (defn- format-w [w g b fresh]
   (let [w (safe-round w)
         g (safe-round g)
         dir (when (number? b)
-              (get ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"] (math/round (/ (+ b 22) 45))))
-        cls (if fresh "text-blue-800" "text-slate-400")
-        ]
+              (get ["С","СВ","В","ЮВ","Ю","ЮЗ","З","СЗ"] (int (math/floor (/ (+ b 22) 45)))))
+        cls (if fresh "text-blue-800" "text-slate-400")]
     [:div.whitespace-nowrap {:class cls}
-     w 
-     (when (and g (not= w g)) 
+     w
+     (when (and g (not= w g))
        (str "-" g))
      " м/с"
-     (when (and (> w 0) dir) 
-       (str ", " dir))
-     ]
-    ))
+     (when (and (> w 0) dir)
+       (str ", " dir))]))
 
 
 (defn format-data-item [{:keys [st title descr last elev lat lon]}]  ;; st-data
@@ -117,36 +105,31 @@
       (when (number? p)
         (format-p p trend-p p_fresh))
       (when (number? w)
-        (format-w w g b w_fresh))]]
-    ))
+        (format-w w g b w_fresh))]]))
 
 
 (defn data-block [{{raw-st-list :st_list} :params}]
   (let [st-list (split-st-list raw-st-list)
         st-data-list (arrange-by st-list (fetch-st-data st-list))]
-    (html 
+    (html
      [:div#data-block.my-2.w-full
       (if st-data-list
         (list
          [:ul
-           (for [std st-data-list]
+          (for [std st-data-list]
             (format-data-item std))]
          [:div.flex.justify-between.items-end
           [:div.mx-2.text-gray-400.text-sm (format-dmy-hm (now-inst))]
-          [:a.text-sky-600.inline-block.mx-3.my-0 
+          [:a.text-sky-600.inline-block.mx-3.my-0
            {:href (permalink-st-list st-data-list) :target "_blank"
-            :title "Прямая ссылка на выбранные станции"} 
-           (raw ico/external-link-svg)]
-          ]
-         )
+            :title "Прямая ссылка на выбранные станции"}
+           (raw ico/external-link-svg)]])
         (if raw-st-list
           [:div.p-12.text-xl.text-indigo-900.text-center
            "Нет актуальных данных по выбранным станциям."]
-          [:div.text-gray-300.p-2.text-center 
+          [:div.text-gray-300.p-2.text-center
            "Загрузка данных ..."
-           [:script (raw "window.initial_load = true;")]]))
-      ]
-     )))
+           [:script (raw "window.initial_load = true;")]]))])))
 
 
 (defn options [_req]
@@ -155,9 +138,8 @@
 
 (defn root-page [req]
   (html-resp
-    (page-body req 
-      (layout (data-block req))
-    )))
+   (page-body req
+              (layout (data-block req)))))
 
 
 (defn data-page [req]
