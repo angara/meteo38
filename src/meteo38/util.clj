@@ -1,5 +1,5 @@
 (ns meteo38.util
-  (:import 
+  (:import
    [java.time Instant ZoneId ZoneOffset]
    [java.time.format DateTimeFormatter]
    )
@@ -20,13 +20,13 @@
         )))
 
 (comment
-  
+
   (split-st-list ",,uiii,npsd,ubil31")
   ;; => ("uiii" "npsd" "ubil31")
-  
+
   (split-st-list "")
   ;; => nil
- 
+
   ,)
 
 
@@ -96,4 +96,3 @@
   (fn [req]
     (let [query-params (-> req (:query-string) (parse-query-string))]
       (handler (update req :params merge query-params)))))
-

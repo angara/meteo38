@@ -1,6 +1,5 @@
 (ns meteo38.assets
   (:require
-    [clojure.string :as str]
     [babashka.fs :as fs]
     [meteo38.config :refer [ASSETS_DIR]]
     [meteo38.util :refer [instant->rfc1123]]
@@ -8,7 +7,7 @@
 
 
 ;; https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
-(def EXT_CTYPE_MAP 
+(def EXT_CTYPE_MAP
   {"css" "text/css"
    "ico" "image/vnd.microsoft.icon"
    "js"  "text/javascript"
@@ -30,12 +29,12 @@
 (defn load-assets-map [path]
   (->> path
       (fs/list-dir)
-      (map name->path-ctype) 
-      (into {}) 
+      (map name->path-ctype)
+      (into {})
       ))
 
 
-(def ASSETS_MAP 
+(def ASSETS_MAP
   (load-assets-map ASSETS_DIR))
 
 
